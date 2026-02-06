@@ -18,58 +18,6 @@ oauth2Client.setCredentials({
 
 const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
-// export async function searchEmails({
-//   sender,
-//   maxResults = 10,
-//   query = "",
-// }: {
-//   sender?: string;
-//   maxResults?: number;
-//   query?: string;
-// }) {
-//   try {
-//     const searchQuery = sender ? `from:${sender} ${query}`.trim() : query;
-
-//     const listRes = await gmail.users.messages.list({
-//       userId: "me",
-//       maxResults,
-//       q: searchQuery,
-//     });
-
-//     const messages = listRes.data.messages || [];
-
-//     if (messages.length === 0) return [];
-
-//     const emailData = await Promise.all(
-//       messages.map(async (msg) => {
-//         const detailRes = await gmail.users.messages.get({
-//           userId: "me",
-//           id: msg.id!,
-//           format: "metadata",
-//         });
-
-//         const headers = detailRes.data.payload?.headers;
-
-//         return {
-//           id: msg.id,
-//           threadId: msg.threadId,
-//           subject:
-//             headers?.find((h) => h.name === "Subject")?.value || "No Subject",
-//           from:
-//             headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
-//           date: headers?.find((h) => h.name === "Date")?.value || "",
-//           snippet: detailRes.data.snippet,
-//         };
-//       }),
-//     );
-
-//     return emailData;
-//   } catch (error) {
-//     console.error("Unified Gmail API Error:", error);
-//     throw error;
-//   }
-// }
-
 export async function searchEmails({
   sender,
   maxResults = 10,
