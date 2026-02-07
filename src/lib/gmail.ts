@@ -304,3 +304,27 @@ export async function sendEmail(to: string, subject: string, body: string) {
     throw error;
   }
 }
+
+export async function modifyEmailLabels(
+  messageId: string,
+  addLabelIds: string[] = [],
+  removeLabelIds: string[] = [],
+) {
+  try {
+    const res = await gmail.users.messages.modify({
+      userId: "me",
+      id: messageId,
+      requestBody: {
+        addLabelIds: addLabelIds,
+        removeLabelIds: removeLabelIds,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Gmail Label Error:",
+      error instanceof Error && error.message,
+    );
+    throw error;
+  }
+}
