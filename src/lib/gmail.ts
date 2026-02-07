@@ -1,5 +1,6 @@
-import { google } from "googleapis";
+import { gmail_v1, google } from "googleapis";
 import dotenv from "dotenv";
+import MailComposer from "nodemailer/lib/mail-composer";
 
 dotenv.config({ quiet: true });
 
@@ -114,6 +115,192 @@ export async function untrashEmail(messageId: string) {
     return res.data;
   } catch (error) {
     console.error("Gmail Untrash Error:", error);
+    throw error;
+  }
+}
+
+export async function createDraft(to: string, subject: string, body: string) {
+  try {
+    // 1. Compose the email
+    const mail = new MailComposer({
+      to,
+      subject,
+      text: body, // Use 'html' instead of 'text' if you want to send formatted HTML
+      from: "me",
+    });
+
+    // 2. Compile it to a Buffer
+    const message = await mail.compile().build();
+
+    // 3. Encode to Base64URL (Google requirement: replace +, / and remove =)
+    const raw = message
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    // 4. Create the draft in Gmail
+    const res = await gmail.users.drafts.create({
+      userId: "me",
+      requestBody: {
+        message: {
+          raw: raw,
+        },
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error("Gmail Draft Creation Error:", error);
+    throw error;
+  }
+}
+
+export async function deleteDraft(draftId: string) {
+  try {
+    await gmail.users.drafts.delete({
+      userId: "me",
+      id: draftId,
+    });
+
+    console.log(`Draft ${draftId} deleted successfully.`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting draft:", error);
+    throw error;
+  }
+}
+
+export async function listDrafts(maxResults = 10) {
+  try {
+    const listRes = await gmail.users.drafts.list({
+      userId: "me",
+      maxResults: maxResults,
+    });
+
+    const drafts = listRes.data.drafts || [];
+
+    // Fetch full details for each draft to get headers (Subject, To, etc.)
+    const draftData = await Promise.all(
+      drafts.map(async (d) => {
+        const detailRes = await gmail.users.drafts.get({
+          userId: "me",
+          id: d.id!,
+        });
+
+        const headers = detailRes.data.message?.payload?.headers;
+
+        return {
+          draftId: d.id,
+          threadId: d.message?.threadId,
+          subject:
+            headers?.find((h) => h.name === "Subject")?.value || "No Subject",
+          to: headers?.find((h) => h.name === "To")?.value || "No Recipient",
+          date: headers?.find((h) => h.name === "Date")?.value,
+          snippet: detailRes.data.message?.snippet,
+        };
+      }),
+    );
+
+    return draftData;
+  } catch (error) {
+    console.error("Gmail List Drafts Error:", error);
+    throw error;
+  }
+}
+
+export async function getDraft(draftId: string) {
+  try {
+    const res = await gmail.users.drafts.get({
+      userId: "me",
+      id: draftId,
+    });
+
+    const message = res.data.message;
+    const headers = message?.payload?.headers;
+
+    // Extract headers
+    const subject = headers?.find((h) => h.name === "Subject")?.value;
+    const to = headers?.find((h) => h.name === "To")?.value;
+
+    // Extract and decode the body
+    let body = "";
+    const extractBody = (part: gmail_v1.Schema$MessagePart) => {
+      if (part.body?.data) {
+        body += Buffer.from(part.body.data, "base64").toString("utf-8");
+      }
+      if (part.parts) {
+        part.parts.forEach(extractBody);
+      }
+    };
+
+    if (message?.payload) {
+      extractBody(message.payload);
+    }
+
+    return {
+      draftId: res.data.id,
+      subject,
+      to,
+      body,
+      rawResponse: res.data, // Useful for debugging
+    };
+  } catch (error) {
+    console.error("Error fetching draft:", error);
+    throw error;
+  }
+}
+
+export async function sendDraft(draftId: string) {
+  try {
+    const res = await gmail.users.drafts.send({
+      userId: "me",
+      requestBody: {
+        id: draftId,
+      },
+    });
+
+    console.log(
+      `Draft ${draftId} sent successfully! Message ID: ${res.data.id}`,
+    );
+    return res.data;
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("Error sending draft:", errorMessage);
+    throw error;
+  }
+}
+
+export async function sendEmail(to: string, subject: string, body: string) {
+  try {
+    const mail = new MailComposer({
+      to,
+      subject,
+      text: body,
+      from: "me",
+    });
+
+    const message = await mail.compile().build();
+
+    const raw = message
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    const res = await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: raw,
+      },
+    });
+
+    return res.data;
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("Gmail Send Error:", errorMessage);
     throw error;
   }
 }
