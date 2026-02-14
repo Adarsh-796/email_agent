@@ -11,7 +11,11 @@ import {
   trashEmail,
   untrashEmail,
 } from "./gmail";
-import { createCalendarEvent, listCalendarEvents } from "./calendar";
+import {
+  createCalendarEvent,
+  listCalendarEvents,
+  listEventsByDate,
+} from "./calendar";
 
 export const sendEmailTool = tool({
   description: "Used to send an email to a specified email address",
@@ -128,6 +132,7 @@ export const createCalendarEventTool = tool({
       ),
     attendeeEmails: z
       .array(z.email())
+      .optional()
       .describe("An array of email addresses for people to invite."),
   }),
   execute: async ({
@@ -203,9 +208,22 @@ export const modifyLabelTool = tool({
 export const listCalendarEventsTool = tool({
   description: "Used to list the calendar events",
   inputSchema: z.object({
-    maxResults: z.number()
+    maxResults: z.number(),
   }),
-  execute: async ({ maxResults}) => {
-    await listCalendarEvents(maxResults)
+  execute: async ({ maxResults }) => {
+    await listCalendarEvents(maxResults);
+  },
+});
+
+export const listCalendarEventByDateTool = tool({
+  description: "Fetches calendar events or meetings on any particular date",
+  inputSchema: z.object({
+    dateString: z
+      .string()
+      .describe("The date to fetch events for, in YYYY-MM-DD format"),
+  }),
+  execute: async ({ dateString }) => {
+    const targetDate = new Date(dateString);
+    return await listEventsByDate(targetDate);
   },
 });

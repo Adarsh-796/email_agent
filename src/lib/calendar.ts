@@ -23,7 +23,7 @@ export async function createCalendarEvent(
   description: string,
   startTime: string, // ISO string: "2026-02-10T10:00:00Z"
   endTime: string,
-  attendeeEmails: string[],
+  attendeeEmails?: string[],
 ) {
   try {
     const res = await calendar.events.insert({
@@ -40,7 +40,7 @@ export async function createCalendarEvent(
           dateTime: endTime,
           timeZone: "UTC",
         },
-        attendees: attendeeEmails.map((email) => ({ email })),
+        attendees: attendeeEmails?.map((email) => ({ email })),
         // Optional: Add a Google Meet link automatically
         conferenceData: {
           createRequest: {
@@ -78,6 +78,59 @@ export async function listCalendarEvents(maxResults: number = 10) {
       "Error fetching events:",
       error instanceof Error && error.message,
     );
+    throw error;
+  }
+}
+
+// export async function listEventsByDate(date: string | Date) {
+//   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+//   const startOfDay = new Date(date);
+//   startOfDay.setHours(0, 0, 0, 0);
+
+//   const endOfDay = new Date(date);
+//   endOfDay.setDate(endOfDay.getDate() + 1);
+//   endOfDay.setHours(0, 0, 0, 0);
+
+//   try {
+//     const res = await calendar.events.list({
+//       calendarId: "primary",
+//       timeMin: startOfDay.toISOString(),
+//       timeMax: endOfDay.toISOString(),
+//       singleEvents: true,
+//       orderBy: "startTime",
+//     });
+
+//     return res.data.items || [];
+//   } catch (error) {
+//     console.error("Error fetching events for date:", error);
+//     throw error;
+//   }
+// }
+
+export async function listEventsByDate(targetDate: Date) {
+  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+  // 1. Set the start of the target day (00:00:00)
+  const startOfDay = new Date(targetDate);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  // 2. Set the end of the target day (23:59:59)
+  const endOfDay = new Date(targetDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  try {
+    const res = await calendar.events.list({
+      calendarId: "primary",
+      timeMin: startOfDay.toISOString(),
+      timeMax: endOfDay.toISOString(),
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+
+    return res.data.items || [];
+  } catch (error) {
+    console.error("Error fetching events for date:", error);
     throw error;
   }
 }
