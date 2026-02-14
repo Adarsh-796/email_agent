@@ -170,7 +170,7 @@ export const deleteDraftTool = tool({
 });
 
 export const listDraftsTool = tool({
-  description: "Used to list aa specified number of draft emails",
+  description: "Used to list a specified number of draft emails",
   inputSchema: z.object({
     maxResults: z.number().default(10),
   }),
