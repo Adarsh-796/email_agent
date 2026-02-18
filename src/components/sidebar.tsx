@@ -7,6 +7,7 @@ import {
   Trash,
 } from "lucide-react";
 import SideBarTab from "./sidebar-tab";
+import Compose from "./compose";
 
 // const tabs = [
 //   { icon: Inbox, tabName: "Inbox" },
@@ -19,13 +20,16 @@ import SideBarTab from "./sidebar-tab";
 
 export default function SideBar() {
   return (
-    <div className="border-2 w-62.5 py-3 pe-3">
-      <SideBarTab icon={Inbox} tabName="Inbox" isActive={true} />
-      <SideBarTab icon={Star} tabName="Starred" isActive={false} />
-      <SideBarTab icon={SendHorizonal} tabName="Sent" isActive={false} />
-      <SideBarTab icon={FileText} tabName="Draft" isActive={false} />
-      <SideBarTab icon={CircleAlert} tabName="Span" isActive={false} />
-      <SideBarTab icon={Trash} tabName="Bin" isActive={false} />
+    <div className="mt-4">
+      <Compose />
+      <div className="w-62.5 py-3 pe-3 mt-4">
+        <SideBarTab icon={Inbox} tabName="Inbox" isActive={true} />
+        <SideBarTab icon={Star} tabName="Starred" isActive={false} />
+        <SideBarTab icon={SendHorizonal} tabName="Sent" isActive={false} />
+        <SideBarTab icon={FileText} tabName="Draft" isActive={false} />
+        <SideBarTab icon={CircleAlert} tabName="Span" isActive={false} />
+        <SideBarTab icon={Trash} tabName="Bin" isActive={false} />
+      </div>
     </div>
   );
 }
