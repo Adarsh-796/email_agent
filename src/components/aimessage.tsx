@@ -1,0 +1,21 @@
+import { MyUIMessage } from "@/app/api/chat/route";
+import { Card, CardContent } from "./ui/card";
+
+export default function AIMessage({
+  message,
+  role,
+}: {
+  message: string;
+  role: MyUIMessage["role"];
+}) {
+  return (
+    <div className="w-full flex justify-start">
+      <div className="flex flex-col gap-y-2">
+        <strong>{role}</strong>
+        <Card className="py-2">
+          <CardContent>{message}</CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
