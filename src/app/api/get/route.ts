@@ -23,9 +23,10 @@ import { fetchEmails } from "../../../lib/gmail";
 // }
 
 export async function GET(req: Request) {
-  const { pageToken } = await req.json();
+  const { searchParams } = new URL(req.url);
+  console.log(searchParams.get("pageToken"));
   try {
-    const emails = await fetchEmails({ maxResults: 10, pageToken });
+    const emails = await fetchEmails({ maxResults: 10 });
     return NextResponse.json(emails);
   } catch (error) {
     if (error instanceof Error)

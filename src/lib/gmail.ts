@@ -224,6 +224,18 @@ export async function deleteDraft(draftId: string) {
   }
 }
 
+export async function getEmailCount() {
+  try {
+    const res = await gmail.users.getProfile({
+      userId: "me",
+    });
+
+    return res;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function listDrafts(maxResults = 10) {
   try {
     const listRes = await gmail.users.drafts.list({
