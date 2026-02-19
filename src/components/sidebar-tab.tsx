@@ -15,7 +15,7 @@ export default function SideBarTab({
 }) {
   return (
     <div
-      className={`relative ${isActive ? "bg-[rgb(211,227,253)]" : ""} w-50 pl-4 py-2 pe-3 rounded-r-2xl`}
+      className={`relative ${isActive ? "bg-[rgb(211,227,253)]" : ""} w-inherit pl-8 py-2 pe-3 rounded-r-2xl`}
     >
       <Link href="/" className="absolute inset-0 z-10" />
       <div className="flex items-center gap-4">

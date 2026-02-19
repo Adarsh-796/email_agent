@@ -4,7 +4,7 @@ import SearchForm from "./search-form";
 
 export default function NavBar() {
   return (
-    <div className="flex mt-4 mx-8 items-center gap-40 justify-between">
+    <div className="flex mt-4 mx-8 items-center gap-45 justify-between">
       <Logo />
       <div className="flex flex-1 justify-between items-center">
         <SearchForm />
