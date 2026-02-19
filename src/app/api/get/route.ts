@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchEmails, trashEmail, untrashEmail } from "@/lib/gmail";
+import { fetchEmails } from "../../../lib/gmail";
 
-export async function GET() {
+// export async function GET() {
+//   try {
+//     const emails = await searchEmails({
+//       // sender: "info@naukri.com",
+//       maxResults: 10,
+//       newerThan: "1d",
+//       unreadOnly: true,
+//     });
+//     return NextResponse.json(emails);
+//   } catch (error) {
+//     if (error instanceof Error)
+//       return NextResponse.json(
+//         { error: JSON.stringify(error) },
+//         { status: 500 },
+//       );
+//     else
+//       return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+//   }
+// }
+
+export async function GET(req: Request) {
+  const { pageToken } = await req.json();
   try {
-    const emails = await searchEmails({
-      // sender: "info@naukri.com",
-      maxResults: 10,
-      newerThan: "1d",
-      unreadOnly: true,
-    });
+    const emails = await fetchEmails({ maxResults: 10, pageToken });
     return NextResponse.json(emails);
   } catch (error) {
     if (error instanceof Error)

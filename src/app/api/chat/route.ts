@@ -1,27 +1,59 @@
-import { searchEmailTool, sendEmailTool } from "@/lib/tools";
-import { generateText, stepCountIs } from "ai";
-import { google } from "@ai-sdk/google";
+import { MyTools } from "@/lib/tools";
+import { DraftType, DraftWorker } from "@/lib/worker/draft-worker";
+// import { EventCreationWorker } from "@/lib/worker/event-worker";
+import { GeneralWorker } from "@/lib/worker/general-worker";
+import routerWorker from "@/lib/worker/router-worker";
+import { devToolsMiddleware } from "@ai-sdk/devtools";
+// import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
+import {
+  convertToModelMessages,
+  // generateText,
+  streamText,
+  UIMessage,
+  wrapLanguageModel,
+} from "ai";
+
+export const model = wrapLanguageModel({
+  // model: google("gemini-3-flash-preview"),
+  model: openai("gpt-4.1-nano"),
+  middleware: devToolsMiddleware(),
+});
+
+export type MyUIMessage = UIMessage<never, never, MyTools>;
 
 export async function POST(request: Request) {
-  const { question } = await request.json();
-
+  const { messages }: { messages: MyUIMessage[] } = await request.json();
   try {
-    const { text, toolResults } = await generateText({
-      model: google("gemini-2.5-flash"),
-      system: `You're an AI Gmail Agent who can send mails or search emails using the provided tools`,
-      prompt: question,
-      tools: {
-        searchEmailTool,
-        sendEmailTool,
-      },
-      stopWhen: stepCountIs(5),
+    let route: string | null = null;
+    let draftType: string | null = null;
+    if (route === null) {
+      route = await routerWorker(messages);
+    }
+    if (route === "Gmail Worker") {
+      if (draftType === null) {
+        draftType = await DraftType(messages);
+      }
+
+      // await GeneralWorker(messages);
+    } else if (route === "Draft Worker") {
+      await DraftWorker(messages);
+    } else if (route === "Event Worker") {
+      // await EventCreationWorker(messages);
+    }
+
+    const result = streamText({
+      model,
+      messages: await convertToModelMessages(messages),
     });
 
-    return Response.json({ text, results: toolResults });
+    return result.toUIMessageStreamResponse();
   } catch (err) {
     if (err instanceof Error) {
+      return Response.json({ error: JSON.stringify(err) });
       throw err;
     } else {
+      return Response.json({ error: "Failed to fetch" });
       throw new Error("Falied to perform action");
     }
   }
