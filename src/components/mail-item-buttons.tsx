@@ -7,7 +7,7 @@ export default function MailItemButtons({
   id,
   isUnread,
 }: {
-  id?: string;
+  id?: string | null;
   isUnread: boolean;
 }) {
   return (
