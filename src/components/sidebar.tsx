@@ -53,12 +53,7 @@ export default function SideBar() {
           isActive={false}
           route="spam"
         />
-        <SideBarTab
-          icon={Trash}
-          tabName="Bin"
-          isActive={false}
-          route="delete"
-        />
+        <SideBarTab icon={Trash} tabName="Bin" isActive={false} route="bin" />
       </div>
     </div>
   );

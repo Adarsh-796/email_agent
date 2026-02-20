@@ -1,4 +1,10 @@
-import { createDraft, deleteDraft, getDraft, listDrafts } from "@/lib/gmail";
+import {
+  createDraft,
+  deleteDraft,
+  fetchDraftEmails,
+  getDraft,
+  listDrafts,
+} from "@/lib/gmail";
 import { DraftWorker } from "@/lib/worker/draft-worker";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -94,15 +100,11 @@ export async function GET() {
   // const { searchParams } = new URL(request.url);
   // const draftId = searchParams.get("draftId");
 
-  const data = await listDrafts(10);
-
-  if (!data.length) {
-    return NextResponse.json({ error: "draftId is required" }, { status: 400 });
-  }
+  const { emails, nextPageToken } = await fetchDraftEmails({ maxResults: 30 });
 
   try {
     // const draftContent = await getDraft(draftId);
-    return NextResponse.json(data);
+    return NextResponse.json({ emails, nextPageToken }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Draft not found" },
