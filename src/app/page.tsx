@@ -16,7 +16,6 @@ export default async function Page({
   }
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data);
   const { emails, nextPageToken } = data;
   const hasEmails = Array.isArray(emails) && emails.length > 0;
   return (

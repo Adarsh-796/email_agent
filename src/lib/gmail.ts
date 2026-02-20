@@ -617,3 +617,57 @@ export async function modifyEmailLabels(
     throw error;
   }
 }
+
+export async function getSpamEmailsCount() {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      q: "in:spam",
+      maxResults: 1, // We only need the count, not the messages
+    });
+
+    const count = listRes.data.resultSizeEstimate || 0;
+    return count;
+  } catch (error) {
+    console.error("Error fetching spam emails count:", error);
+    throw error;
+  }
+}
+
+export async function getDraftEmailsCount() {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      q: "in:drafts",
+      maxResults: 1, // We only need the count, not the messages
+    });
+
+    const count = listRes.data.resultSizeEstimate || 0;
+    return count;
+  } catch (error) {
+    console.error("Error fetching draft emails count:", error);
+    throw error;
+  }
+}
+
+export async function starEmail(messageId: string) {
+  try {
+    const res = await modifyEmailLabels(messageId, ["STARRED"], []);
+    console.log(`Email ${messageId} starred successfully.`);
+    return res;
+  } catch (error) {
+    console.error("Error starring email:", error);
+    throw error;
+  }
+}
+
+export async function unstarEmail(messageId: string) {
+  try {
+    const res = await modifyEmailLabels(messageId, [], ["STARRED"]);
+    console.log(`Email ${messageId} unstarred successfully.`);
+    return res;
+  } catch (error) {
+    console.error("Error unstarring email:", error);
+    throw error;
+  }
+}
