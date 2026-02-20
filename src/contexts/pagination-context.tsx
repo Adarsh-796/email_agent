@@ -3,10 +3,8 @@
 import React, { use, useState, type ReactNode } from "react";
 
 type PaginationContextType = {
-  previousPage: string;
-  nextPage: string;
-  setPreviousPage: React.Dispatch<React.SetStateAction<string>>;
-  setNextPage: React.Dispatch<React.SetStateAction<string>>;
+  pageTokens: Array<string>;
+  setPageTokens: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export const PaginationContext =
@@ -17,12 +15,9 @@ export default function PaginationContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const [previousPage, setPreviousPage] = useState<string>("");
-  const [nextPage, setNextPage] = useState<string>("");
+  const [pageTokens, setPageTokens] = useState<Array<string>>([]);
   return (
-    <PaginationContext.Provider
-      value={{ previousPage, nextPage, setPreviousPage, setNextPage }}
-    >
+    <PaginationContext.Provider value={{ pageTokens, setPageTokens }}>
       {children}
     </PaginationContext.Provider>
   );

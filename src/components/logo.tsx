@@ -9,6 +9,7 @@ export default function Logo() {
         alt="Gmail Logo"
         width={120}
         height={120}
+        loading="eager"
       />
     </Link>
   );

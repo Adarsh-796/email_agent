@@ -3,9 +3,7 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
@@ -15,20 +13,29 @@ import PaginationContextProvider, {
 import { useEffect } from "react";
 
 export function PaginationDemo({ pageToken }: { pageToken: string }) {
-  const { nextPage, previousPage, setPreviousPage, setNextPage } =
-    usePagination();
+  const { pageTokens, setPageTokens } = usePagination();
+
   useEffect(() => {
-    setPreviousPage(nextPage);
-    setNextPage(pageToken);
-  }, [pageToken]);
+    if (!pageToken) return;
+
+    setPageTokens((prevPageTokens) => {
+      if (prevPageTokens.at(-1) === pageToken) return prevPageTokens;
+      return [...prevPageTokens, pageToken];
+    });
+  }, [pageToken, setPageTokens]);
+
+  const previousToken =
+    pageTokens.length >= 2 ? pageTokens[pageTokens.length - 2] : undefined;
+
+  const nextToken = pageTokens.at(-1);
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={`?pageToken=${previousPage}`} />
+          <PaginationPrevious href={`?pageToken=${previousToken}`} />
         </PaginationItem>
         <PaginationItem>
-          <PaginationNext href={`?pageToken=${nextPage}`} />
+          <PaginationNext href={`?pageToken=${nextToken}`} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

@@ -31,6 +31,7 @@ export async function fetchEmails({
       userId: "me",
       maxResults,
       pageToken,
+      q: "in:inbox",
     });
 
     const messages = listRes.data.messages || [];
@@ -55,6 +56,7 @@ export async function fetchEmails({
           id: msg.id,
           threadId: msg.threadId,
           isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
           subject:
             headers?.find((h) => h.name === "Subject")?.value || "No Subject",
           from:
@@ -68,6 +70,227 @@ export async function fetchEmails({
     return { emails, nextPageToken };
   } catch (error) {
     console.error("Gmail Fetch Error:", error);
+    throw error;
+  }
+}
+
+export async function fetchStarredEmails({
+  maxResults = 10,
+  pageToken,
+}: {
+  maxResults?: number;
+  pageToken?: string;
+}) {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      maxResults,
+      pageToken,
+      q: "is:starred",
+    });
+
+    const messages = listRes.data.messages || [];
+    const nextPageToken = listRes.data.nextPageToken || undefined;
+
+    if (messages.length === 0) {
+      return { emails: [], nextPageToken };
+    }
+
+    const emails = await Promise.all(
+      messages.map(async (msg) => {
+        const detailRes = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id!,
+          format: "metadata",
+        });
+
+        const headers = detailRes.data.payload?.headers;
+        const labelIds = detailRes.data.labelIds || [];
+
+        return {
+          id: msg.id,
+          threadId: msg.threadId,
+          isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
+          subject:
+            headers?.find((h) => h.name === "Subject")?.value || "No Subject",
+          from:
+            headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
+          date: headers?.find((h) => h.name === "Date")?.value || "",
+          snippet: detailRes.data.snippet,
+        };
+      }),
+    );
+
+    return { emails, nextPageToken };
+  } catch (error) {
+    console.error("Gmail Starred Fetch Error:", error);
+    throw error;
+  }
+}
+
+export async function fetchDraftEmails({
+  maxResults = 10,
+  pageToken,
+}: {
+  maxResults?: number;
+  pageToken?: string;
+}) {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      maxResults,
+      pageToken,
+      q: "in:drafts",
+    });
+
+    const messages = listRes.data.messages || [];
+    const nextPageToken = listRes.data.nextPageToken || undefined;
+
+    if (messages.length === 0) {
+      return { emails: [], nextPageToken };
+    }
+
+    const emails = await Promise.all(
+      messages.map(async (msg) => {
+        const detailRes = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id!,
+          format: "metadata",
+        });
+
+        const headers = detailRes.data.payload?.headers;
+        const labelIds = detailRes.data.labelIds || [];
+
+        return {
+          id: msg.id,
+          threadId: msg.threadId,
+          isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
+          subject:
+            headers?.find((h) => h.name === "Subject")?.value || "(No Subject)",
+          from:
+            headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
+          to: headers?.find((h) => h.name === "To")?.value || "",
+          date: headers?.find((h) => h.name === "Date")?.value || "",
+          snippet: detailRes.data.snippet,
+        };
+      }),
+    );
+
+    return { emails, nextPageToken };
+  } catch (error) {
+    console.error("Gmail Draft Fetch Error:", error);
+    throw error;
+  }
+}
+
+export async function fetchSpamEmails({
+  maxResults = 10,
+  pageToken,
+}: {
+  maxResults?: number;
+  pageToken?: string;
+}) {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      maxResults,
+      pageToken,
+      q: "in:spam",
+    });
+
+    const messages = listRes.data.messages || [];
+    const nextPageToken = listRes.data.nextPageToken || undefined;
+
+    if (messages.length === 0) {
+      return { emails: [], nextPageToken };
+    }
+
+    const emails = await Promise.all(
+      messages.map(async (msg) => {
+        const detailRes = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id!,
+          format: "metadata",
+        });
+
+        const headers = detailRes.data.payload?.headers;
+        const labelIds = detailRes.data.labelIds || [];
+
+        return {
+          id: msg.id,
+          threadId: msg.threadId,
+          isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
+          subject:
+            headers?.find((h) => h.name === "Subject")?.value || "(No Subject)",
+          from:
+            headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
+          date: headers?.find((h) => h.name === "Date")?.value || "",
+          snippet: detailRes.data.snippet,
+        };
+      }),
+    );
+
+    return { emails, nextPageToken };
+  } catch (error) {
+    console.error("Gmail Spam Fetch Error:", error);
+    throw error;
+  }
+}
+
+export async function fetchBinEmails({
+  maxResults = 10,
+  pageToken,
+}: {
+  maxResults?: number;
+  pageToken?: string;
+}) {
+  try {
+    const listRes = await gmail.users.messages.list({
+      userId: "me",
+      maxResults,
+      pageToken,
+      q: "in:trash",
+    });
+
+    const messages = listRes.data.messages || [];
+    const nextPageToken = listRes.data.nextPageToken || undefined;
+
+    if (messages.length === 0) {
+      return { emails: [], nextPageToken };
+    }
+
+    const emails = await Promise.all(
+      messages.map(async (msg) => {
+        const detailRes = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id!,
+          format: "metadata",
+        });
+
+        const headers = detailRes.data.payload?.headers;
+        const labelIds = detailRes.data.labelIds || [];
+
+        return {
+          id: msg.id,
+          threadId: msg.threadId,
+          isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
+          subject:
+            headers?.find((h) => h.name === "Subject")?.value || "(No Subject)",
+          from:
+            headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
+          date: headers?.find((h) => h.name === "Date")?.value || "",
+          snippet: detailRes.data.snippet,
+        };
+      }),
+    );
+
+    return { emails, nextPageToken };
+  } catch (error) {
+    console.error("Gmail Bin Fetch Error:", error);
     throw error;
   }
 }
@@ -125,6 +348,7 @@ export async function searchEmails({
           threadId: msg.threadId,
           // Check if the message is actually unread by looking at labels
           isUnread: labelIds.includes("UNREAD"),
+          isStarred: labelIds.includes("STARRED"),
           subject:
             headers?.find((h) => h.name === "Subject")?.value || "No Subject",
           from:

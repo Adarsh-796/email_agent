@@ -6,3 +6,13 @@ export type MailType = {
   approvalId?: string;
 };
 
+export type MailItemType = {
+  id: string | null | undefined;
+  threadId: string | null | undefined;
+  isUnread: boolean;
+  isStarred: boolean;
+  subject: string;
+  from: string;
+  date: string;
+  snippet: string | null | undefined;
+};

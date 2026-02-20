@@ -1,6 +1,7 @@
 import LabelList from "@/components/label-list";
 import MailItem from "@/components/mail-item";
 import PaginationButtons from "@/components/paginationButtons";
+import { MailItemType } from "@/lib/types";
 
 export default async function Page({
   searchParams,
@@ -15,13 +16,21 @@ export default async function Page({
   }
   const response = await fetch(url);
   const data = await response.json();
+  console.log(data);
   const { emails, nextPageToken } = data;
+  const hasEmails = Array.isArray(emails) && emails.length > 0;
   return (
-    <div>
+    <div className="w-full overflow-x-hidden">
       <LabelList />
-      <MailItem />
-      <MailItem />
-      <MailItem />
+      {hasEmails ? (
+        emails.map((email: MailItemType) => (
+          <MailItem key={email.id} mailItem={email} />
+        ))
+      ) : (
+        <p className="text-center">
+          No emails found. Try a different search or check back later.
+        </p>
+      )}
       <PaginationButtons pageToken={nextPageToken} />
     </div>
   );
