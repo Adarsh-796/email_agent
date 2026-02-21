@@ -599,7 +599,7 @@ export async function getSpamEmailsCount() {
     const listRes = await gmail.users.messages.list({
       userId: "me",
       q: "in:spam",
-      maxResults: 1, // We only need the count, not the messages
+      maxResults: 1,
     });
 
     const count = listRes.data.resultSizeEstimate || 0;
@@ -615,7 +615,7 @@ export async function getDraftEmailsCount() {
     const listRes = await gmail.users.messages.list({
       userId: "me",
       q: "in:drafts",
-      maxResults: 1, // We only need the count, not the messages
+      maxResults: 1,
     });
 
     const count = listRes.data.resultSizeEstimate || 0;
@@ -626,70 +626,71 @@ export async function getDraftEmailsCount() {
   }
 }
 
+export interface modifyEmailLabelsOptions {
+  isStarred?: boolean;
+  isRead?: boolean;
+  isTrashed?: boolean;
+  isArchived?: boolean; // New: Toggle Archive status
+}
+
 export async function modifyEmailLabels(
   messageId: string,
-  addLabelIds: string[] = [],
-  removeLabelIds: string[] = [],
+  options: modifyEmailLabelsOptions,
 ) {
+  const addLabelIds: string[] = [];
+  const removeLabelIds: string[] = [];
+
+  if (options.isStarred !== undefined) {
+    if (options.isStarred) {
+      addLabelIds.push("STARRED");
+    } else {
+      removeLabelIds.push("STARRED");
+    }
+  }
+
+  if (options.isRead !== undefined) {
+    if (options.isRead) {
+      removeLabelIds.push("UNREAD");
+    } else {
+      addLabelIds.push("UNREAD");
+    }
+  }
+
+  if (options.isTrashed !== undefined) {
+    if (options.isTrashed) {
+      addLabelIds.push("TRASH");
+      removeLabelIds.push("INBOX");
+    } else {
+      removeLabelIds.push("TRASH");
+      addLabelIds.push("INBOX");
+    }
+  } else if (options.isArchived !== undefined) {
+    if (options.isArchived) {
+      removeLabelIds.push("INBOX");
+    } else {
+      addLabelIds.push("INBOX");
+    }
+  }
+
+  if (addLabelIds.length === 0 && removeLabelIds.length === 0) {
+    return { status: "no-action", message: "No state changes provided." };
+  }
+
   try {
     const res = await gmail.users.messages.modify({
       userId: "me",
       id: messageId,
       requestBody: {
-        addLabelIds: addLabelIds,
-        removeLabelIds: removeLabelIds,
+        addLabelIds,
+        removeLabelIds,
       },
     });
+
+    console.log(`Successfully updated ${messageId}`);
     return res.data;
   } catch (error) {
-    console.error(
-      "Gmail Label Error:",
-      error instanceof Error && error.message,
-    );
-    throw error;
-  }
-}
-
-export async function starEmail(messageId: string) {
-  try {
-    const res = await modifyEmailLabels(messageId, ["STARRED"], []);
-    console.log(`Email ${messageId} starred successfully.`);
-    return res;
-  } catch (error) {
-    console.error("Error starring email:", error);
-    throw error;
-  }
-}
-
-export async function unstarEmail(messageId: string) {
-  try {
-    const res = await modifyEmailLabels(messageId, [], ["STARRED"]);
-    console.log(`Email ${messageId} unstarred successfully.`);
-    return res;
-  } catch (error) {
-    console.error("Error unstarring email:", error);
-    throw error;
-  }
-}
-
-export async function markEmailAsRead(messageId: string) {
-  try {
-    const res = await modifyEmailLabels(messageId, [], ["UNREAD"]);
-    console.log(`Email ${messageId} marked as read successfully.`);
-    return res;
-  } catch (error) {
-    console.error("Error marking email as read:", error);
-    throw error;
-  }
-}
-
-export async function markEmailAsUnread(messageId: string) {
-  try {
-    const res = await modifyEmailLabels(messageId, ["UNREAD"], []);
-    console.log(`Email ${messageId} marked as unread successfully.`);
-    return res;
-  } catch (error) {
-    console.error("Error marking email as unread:", error);
-    throw error;
+    const msg = error instanceof Error ? error.message : "Unknown API Error";
+    console.error(`Gmail Update Error [${messageId}]:`, msg);
+    throw new Error(msg);
   }
 }

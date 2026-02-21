@@ -17,7 +17,7 @@ export default function StarButton({
       onClick={() => {
         console.log("Clicked");
         if (id) {
-          handleStarAction(id, isStarred ? "unstar" : "star");
+          handleStarAction(id, { isStarred: !isStarred });
         }
       }}
     />

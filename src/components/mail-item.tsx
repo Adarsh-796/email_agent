@@ -11,17 +11,14 @@ function formatEmailDate(dateStr: string): string {
   const sameDay = date.toDateString() === now.toDateString();
 
   if (sameDay) {
-    // Return only time (e.g., "11:52 AM")
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
   if (sameYear) {
-    // Return day month (e.g., "13 Feb")
     return date.toLocaleDateString(undefined, {
       day: "numeric",
       month: "short",
     });
   }
-  // Return full date in MM/DD/YYYY format for previous years
   return date.toLocaleDateString(undefined, {
     month: "2-digit",
     day: "2-digit",
@@ -32,10 +29,8 @@ function formatEmailDate(dateStr: string): string {
 export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
   const { id, date, from, isStarred, isUnread, threadId, snippet, subject } =
     mailItem;
-  // console.log(mailItem);
   return (
     <section className="group w-full flex hover:cursor-pointer hover:shadow-md py-2 px-3 items-center transition-shadow duration-200 overflow-hidden">
-      {/* Left: sender info – fixed width, no shrink */}
       <div className="flex items-center w-56 shrink-0 gap-x-4">
         <Checkbox />
         <StarButton isStarred={isStarred} id={id} />
@@ -43,9 +38,7 @@ export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
           {from.split("<")[0].replace(/"/g, "").trim()}
         </h3>
       </div>
-      {/* Right: subject + snippet + date – fills remaining space */}
       <div className="flex flex-1 items-center min-w-0 gap-x-2">
-        {/* Subject + snippet, truncated to one line */}
         <p className="flex-1 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis text-sm">
           <span
             className={
@@ -59,7 +52,6 @@ export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
             {(snippet || "").replace(/<[^>]*>/g, "")}
           </span>
         </p>
-        {/* Date pinned to the right */}
         <div className="shrink-0 flex items-center">
           <p className="group-hover:hidden text-sm text-gray-500 whitespace-nowrap">
             {formatEmailDate(date)}
