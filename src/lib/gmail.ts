@@ -594,30 +594,6 @@ export async function sendEmail(to: string, subject: string, body: string) {
   }
 }
 
-export async function modifyEmailLabels(
-  messageId: string,
-  addLabelIds: string[] = [],
-  removeLabelIds: string[] = [],
-) {
-  try {
-    const res = await gmail.users.messages.modify({
-      userId: "me",
-      id: messageId,
-      requestBody: {
-        addLabelIds: addLabelIds,
-        removeLabelIds: removeLabelIds,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.error(
-      "Gmail Label Error:",
-      error instanceof Error && error.message,
-    );
-    throw error;
-  }
-}
-
 export async function getSpamEmailsCount() {
   try {
     const listRes = await gmail.users.messages.list({
@@ -650,6 +626,30 @@ export async function getDraftEmailsCount() {
   }
 }
 
+export async function modifyEmailLabels(
+  messageId: string,
+  addLabelIds: string[] = [],
+  removeLabelIds: string[] = [],
+) {
+  try {
+    const res = await gmail.users.messages.modify({
+      userId: "me",
+      id: messageId,
+      requestBody: {
+        addLabelIds: addLabelIds,
+        removeLabelIds: removeLabelIds,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Gmail Label Error:",
+      error instanceof Error && error.message,
+    );
+    throw error;
+  }
+}
+
 export async function starEmail(messageId: string) {
   try {
     const res = await modifyEmailLabels(messageId, ["STARRED"], []);
@@ -668,6 +668,28 @@ export async function unstarEmail(messageId: string) {
     return res;
   } catch (error) {
     console.error("Error unstarring email:", error);
+    throw error;
+  }
+}
+
+export async function markEmailAsRead(messageId: string) {
+  try {
+    const res = await modifyEmailLabels(messageId, [], ["UNREAD"]);
+    console.log(`Email ${messageId} marked as read successfully.`);
+    return res;
+  } catch (error) {
+    console.error("Error marking email as read:", error);
+    throw error;
+  }
+}
+
+export async function markEmailAsUnread(messageId: string) {
+  try {
+    const res = await modifyEmailLabels(messageId, ["UNREAD"], []);
+    console.log(`Email ${messageId} marked as unread successfully.`);
+    return res;
+  } catch (error) {
+    console.error("Error marking email as unread:", error);
     throw error;
   }
 }
