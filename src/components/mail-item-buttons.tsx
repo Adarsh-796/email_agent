@@ -3,13 +3,16 @@
 import { Archive, Trash, Mail, MailOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { handleLabelAction } from "@/lib/actions";
+import { OptEmailInputType } from "./opt-emails";
 
 export default function MailItemButtons({
   id,
   isUnread,
+  onAction,
 }: {
   id?: string | null;
   isUnread: boolean;
+  onAction: ({ id, action }: OptEmailInputType) => Promise<void>;
 }) {
   return (
     <>
@@ -39,7 +42,8 @@ export default function MailItemButtons({
         variant={"ghost"}
         onClick={() => {
           if (id) {
-            handleLabelAction(id, { isRead: isUnread ? true : false });
+            onAction({ id, action: isUnread ? "read" : "unread" });
+            // handleLabelAction(id, { isRead: isUnread ? true : false });
           }
         }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"

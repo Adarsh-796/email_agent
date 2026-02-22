@@ -1,13 +1,16 @@
 "use client";
 import { handleLabelAction } from "@/lib/actions";
 import { Star } from "lucide-react";
+import { OptEmailInputType } from "./opt-emails";
 
 export default function StarButton({
   isStarred,
   id,
+  onAction,
 }: {
   isStarred: boolean;
   id?: string | null;
+  onAction: ({ id, action }: OptEmailInputType) => Promise<void>;
 }) {
   return (
     <Star
@@ -17,7 +20,7 @@ export default function StarButton({
       onClick={() => {
         console.log("Clicked");
         if (id) {
-          handleLabelAction(id, { isStarred: !isStarred });
+          onAction({ id, action: isStarred ? "unstar" : "star" });
         }
       }}
     />
