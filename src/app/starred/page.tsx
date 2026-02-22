@@ -2,8 +2,7 @@ import MailItem from "@/components/mail-item";
 import { MailItemType } from "@/lib/types";
 
 export default async function StarredPage() {
-  const { BASEURL } = process.env;
-  const response = await fetch(`${BASEURL}/api/star`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/star`);
   const data = await response.json();
   const { emails, nextPageToken } = data;
   const hasEmails = emails.length > 0;

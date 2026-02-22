@@ -1,5 +1,5 @@
 "use client";
-import { handleStarAction } from "@/lib/actions";
+import { handleLabelAction } from "@/lib/actions";
 import { Star } from "lucide-react";
 
 export default function StarButton({
@@ -17,7 +17,7 @@ export default function StarButton({
       onClick={() => {
         console.log("Clicked");
         if (id) {
-          handleStarAction(id, { isStarred: !isStarred });
+          handleLabelAction(id, { isStarred: !isStarred });
         }
       }}
     />

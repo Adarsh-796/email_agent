@@ -2,8 +2,7 @@ import MailItem from "@/components/mail-item";
 import { MailItemType } from "@/lib/types";
 
 export default async function BinPage() {
-  const { BASEURL } = process.env;
-  const response = await fetch(`${BASEURL}/api/bin`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/bin`);
   const data = await response.json();
   const { emails, nextPageToken } = data;
 

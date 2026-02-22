@@ -1,14 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { modifyEmailLabelsOptions } from "./gmail";
+import { modifyEmailLabelsOptions } from "./types";
 
-async function handleStarAction(
+async function handleLabelAction(
   messageId: string,
   options: modifyEmailLabelsOptions,
 ) {
   const { BASEURL } = process.env;
-  const url = `${BASEURL}/api/labels`;
+  const url = `${process.env.NEXT_PUBLIC_BASEURL}/api/labels`;
   try {
     await fetch(url, {
       method: "POST",
@@ -19,8 +19,8 @@ async function handleStarAction(
     });
     revalidatePath("/");
   } catch (error) {
-    console.error("Error handling star action:", error);
+    console.error("Error handling label action:", error);
   }
 }
 
-export { handleStarAction };
+export { handleLabelAction };

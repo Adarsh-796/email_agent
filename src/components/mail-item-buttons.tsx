@@ -2,6 +2,7 @@
 
 import { Archive, Trash, Mail, MailOpen } from "lucide-react";
 import { Button } from "./ui/button";
+import { handleLabelAction } from "@/lib/actions";
 
 export default function MailItemButtons({
   id,
@@ -14,21 +15,33 @@ export default function MailItemButtons({
     <>
       <Button
         variant={"ghost"}
-        onClick={() => console.log("Archive")}
+        onClick={() => {
+          if (id) {
+            handleLabelAction(id, { isArchived: true });
+          }
+        }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"
       >
         <Archive className="w-4 h-4 text-gray-700" />
       </Button>
       <Button
         variant={"ghost"}
-        onClick={() => console.log("Delete")}
+        onClick={() => {
+          if (id) {
+            handleLabelAction(id, { isTrashed: true });
+          }
+        }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"
       >
         <Trash className="w-4 h-4 text-gray-700" />
       </Button>
       <Button
         variant={"ghost"}
-        onClick={() => console.log("Mark as unread")}
+        onClick={() => {
+          if (id) {
+            handleLabelAction(id, { isRead: isUnread ? true : false });
+          }
+        }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"
       >
         {isUnread ? (

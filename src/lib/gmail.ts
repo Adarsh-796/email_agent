@@ -1,6 +1,7 @@
 import { gmail_v1, google } from "googleapis";
 import dotenv from "dotenv";
 import MailComposer from "nodemailer/lib/mail-composer";
+import { modifyEmailLabelsOptions } from "./types";
 
 dotenv.config({ quiet: true });
 
@@ -624,13 +625,6 @@ export async function getDraftEmailsCount() {
     console.error("Error fetching draft emails count:", error);
     throw error;
   }
-}
-
-export interface modifyEmailLabelsOptions {
-  isStarred?: boolean;
-  isRead?: boolean;
-  isTrashed?: boolean;
-  isArchived?: boolean; // New: Toggle Archive status
 }
 
 export async function modifyEmailLabels(

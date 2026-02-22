@@ -1,4 +1,5 @@
-import { modifyEmailLabels, modifyEmailLabelsOptions } from "@/lib/gmail";
+import { modifyEmailLabels } from "@/lib/gmail";
+import { modifyEmailLabelsOptions } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {

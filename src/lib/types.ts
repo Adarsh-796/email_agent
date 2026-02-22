@@ -16,3 +16,10 @@ export type MailItemType = {
   date: string;
   snippet: string | null | undefined;
 };
+
+export type modifyEmailLabelsOptions = {
+  isStarred?: boolean;
+  isRead?: boolean;
+  isTrashed?: boolean;
+  isArchived?: boolean;
+};
