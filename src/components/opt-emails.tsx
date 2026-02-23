@@ -34,9 +34,7 @@ export default function OptimisticEmails({
             email.id === id ? { ...email, isStarred: true } : email,
           );
         case "unstar":
-          return currentEmails.map((email) =>
-            email.id === id ? { ...email, isStarred: false } : email,
-          );
+          return currentEmails.filter((email) => email.id !== id);
       }
     },
   );

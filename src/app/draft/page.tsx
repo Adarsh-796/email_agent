@@ -1,7 +1,7 @@
-import MailItem from "@/components/mail-item";
+import OptimisticEmails from "@/components/opt-emails";
 import { MailItemType } from "@/lib/types";
 
-export default async function SpamPage() {
+export default async function DraftPage() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/draft`);
   const data = await response.json();
   const { emails, nextPageToken } = data;
@@ -10,9 +10,7 @@ export default async function SpamPage() {
   return (
     <div className="w-full overflow-x-hidden">
       {hasEmails ? (
-        emails.map((email: MailItemType) => (
-          <MailItem key={email.id} mailItem={email} />
-        ))
+        <OptimisticEmails emails={emails} />
       ) : (
         <p className="text-center">
           No emails found. Try a different search or check back later.
