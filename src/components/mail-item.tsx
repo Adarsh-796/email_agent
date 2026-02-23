@@ -46,8 +46,8 @@ export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
           {from.split("<")[0].replace(/"/g, "").trim()}
         </h3>
       </div>
-      <div className="flex flex-1 items-center min-w-0 gap-x-2 relative z-10 pointer-events-none">
-        <p className="flex-1 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis text-sm">
+      <div className="flex-1 min-w-0 relative z-10 pointer-events-none pr-4">
+        <p className="text-sm line-clamp-1">
           <span
             className={
               isUnread ? "font-bold text-gray-900" : "font-medium text-gray-700"
@@ -55,18 +55,18 @@ export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
           >
             {subject || "(No subject)"}
           </span>
-          <span className="mx-2 text-gray-400">-</span>
+          <span className="mx-2 text-gray-400 font-normal">-</span>
           <span className="text-gray-400 font-normal">
             {(snippet || "").replace(/<[^>]*>/g, "")}
           </span>
         </p>
-        <div className="shrink-0 flex items-center pointer-events-auto">
-          <p className="group-hover:hidden text-sm text-gray-500 whitespace-nowrap">
-            {formatEmailDate(date)}
-          </p>
-          <div className="hidden group-hover:flex gap-2">
-            <MailItemButtons id={id} isUnread={isUnread} />
-          </div>
+      </div>
+      <div className="shrink-0 flex items-center pointer-events-auto relative z-10">
+        <p className="group-hover:hidden text-sm text-gray-500 whitespace-nowrap">
+          {formatEmailDate(date)}
+        </p>
+        <div className="hidden group-hover:flex gap-2">
+          <MailItemButtons id={id} isUnread={isUnread} />
         </div>
       </div>
     </section>

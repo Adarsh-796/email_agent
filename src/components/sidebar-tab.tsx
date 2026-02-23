@@ -1,20 +1,24 @@
+"use client";
+
 import { LucideProps } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 export default function SideBarTab({
   icon: Icon,
   tabName,
-  isActive,
   route,
 }: {
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
   tabName: string;
-  isActive: boolean;
   route: string;
 }) {
+  const pathname = usePathname();
+  const isActive = pathname === `/${route}` || pathname.includes(`/${route}`);
+
   return (
     <div
       className={`relative ${isActive ? "bg-[rgb(211,227,253)]" : ""} w-inherit pl-8 py-2 pe-3 rounded-r-2xl`}

@@ -8,7 +8,7 @@ import MailItem from "./mail-item";
 
 export type OptEmailInputType = {
   id: string;
-  action: "star" | "unstar" | "read" | "unread";
+  action: "star" | "unstar" | "read" | "unread" | "trash" | "archieve";
 };
 
 export default function OptimisticEmails({
@@ -35,6 +35,10 @@ export default function OptimisticEmails({
           );
         case "unstar":
           return currentEmails.filter((email) => email.id !== id);
+        case "trash":
+          return currentEmails.filter((email) => email.id !== id);
+        case "archieve":
+          return currentEmails.filter((email) => email.id !== id);
       }
     },
   );
@@ -51,6 +55,10 @@ export default function OptimisticEmails({
         options = { isRead: true };
       } else if (action === "unread") {
         options = { isRead: false };
+      } else if (action === "trash") {
+        options = { isTrashed: true };
+      } else if (action === "archieve") {
+        options = { isArchived: true };
       }
       await handleLabelAction(id, options);
     });

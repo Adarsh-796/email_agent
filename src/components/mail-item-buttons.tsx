@@ -1,7 +1,6 @@
 "use client";
 
 import { useEmailActionContext } from "@/contexts/email-action/email-action-context";
-import { handleLabelAction } from "@/lib/actions";
 import { Archive, Mail, MailOpen, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 export default function MailItemButtons({
@@ -18,7 +17,7 @@ export default function MailItemButtons({
         variant={"ghost"}
         onClick={() => {
           if (id) {
-            handleLabelAction(id, { isArchived: true });
+            onAction({ id, action: "archieve" });
           }
         }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"
@@ -29,7 +28,7 @@ export default function MailItemButtons({
         variant={"ghost"}
         onClick={() => {
           if (id) {
-            handleLabelAction(id, { isTrashed: true });
+            onAction({ id, action: "trash" });
           }
         }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"
@@ -41,7 +40,6 @@ export default function MailItemButtons({
         onClick={() => {
           if (id) {
             onAction({ id, action: isUnread ? "read" : "unread" });
-            // handleLabelAction(id, { isRead: isUnread ? true : false });
           }
         }}
         className="h-8 w-8 hover:bg-gray-200 rounded-full p-2 transition-colors"

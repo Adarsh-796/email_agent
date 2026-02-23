@@ -1,5 +1,4 @@
 import OptimisticEmails from "@/components/opt-emails";
-import { MailItemType } from "@/lib/types";
 
 export default async function StarredPage() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/star`);

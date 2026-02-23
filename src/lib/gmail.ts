@@ -75,6 +75,73 @@ export async function fetchEmails({
   }
 }
 
+export async function fetchEmailById(messageId: string) {
+  try {
+    const res = await gmail.users.messages.get({
+      userId: "me",
+      id: messageId,
+      format: "full", // "full" returns the parsed message payload
+    });
+
+    const payload = res.data.payload;
+    const headers = payload?.headers;
+    const labelIds = res.data.labelIds || [];
+
+    const extractBody = (
+      part: gmail_v1.Schema$MessagePart,
+    ): { text: string; html: string } => {
+      let text = "";
+      let html = "";
+
+      if (part.mimeType === "text/plain" && part.body?.data) {
+        text += Buffer.from(part.body.data, "base64").toString("utf-8");
+      } else if (part.mimeType === "text/html" && part.body?.data) {
+        html += Buffer.from(part.body.data, "base64").toString("utf-8");
+      }
+
+      if (part.parts) {
+        for (const subPart of part.parts) {
+          const { text: subText, html: subHtml } = extractBody(subPart);
+          text += subText;
+          html += subHtml;
+        }
+      }
+
+      return { text, html };
+    };
+
+    const bodyContent = payload ? extractBody(payload) : { text: "", html: "" };
+
+    return {
+      id: res.data.id,
+      threadId: res.data.threadId,
+      labelIds,
+      isUnread: labelIds.includes("UNREAD"),
+      isStarred: labelIds.includes("STARRED"),
+      subject:
+        headers?.find((h) => h.name === "Subject")?.value || "No Subject",
+      from: headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
+      to: headers?.find((h) => h.name === "To")?.value || "",
+      date: headers?.find((h) => h.name === "Date")?.value || "",
+      snippet: res.data.snippet,
+      bodyText: bodyContent.text,
+      bodyHtml: bodyContent.html,
+      attachments:
+        payload?.parts
+          ?.filter((part) => part.filename && part.filename.length > 0)
+          .map((part) => ({
+            filename: part.filename,
+            mimeType: part.mimeType,
+            attachmentId: part.body?.attachmentId,
+            size: part.body?.size,
+          })) || [],
+    };
+  } catch (error) {
+    console.error(`Error fetching email ${messageId}:`, error);
+    throw error;
+  }
+}
+
 export async function fetchStarredEmails({
   maxResults = 10,
   pageToken,

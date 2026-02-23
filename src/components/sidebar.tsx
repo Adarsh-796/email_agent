@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CircleAlert,
   FileText,
@@ -23,37 +25,12 @@ export default function SideBar() {
     <div className="mt-4">
       <Compose />
       <div className="w-62.5 py-3 pe-3 mt-4">
-        <SideBarTab
-          icon={Inbox}
-          tabName="Inbox"
-          isActive={true}
-          route="inbox"
-        />
-        <SideBarTab
-          icon={Star}
-          tabName="Starred"
-          isActive={false}
-          route="starred"
-        />
-        <SideBarTab
-          icon={SendHorizonal}
-          tabName="Sent"
-          isActive={false}
-          route="sent"
-        />
-        <SideBarTab
-          icon={FileText}
-          tabName="Draft"
-          isActive={false}
-          route="draft"
-        />
-        <SideBarTab
-          icon={CircleAlert}
-          tabName="Spam"
-          isActive={false}
-          route="spam"
-        />
-        <SideBarTab icon={Trash} tabName="Bin" isActive={false} route="bin" />
+        <SideBarTab icon={Inbox} tabName="Inbox" route="inbox" />
+        <SideBarTab icon={Star} tabName="Starred" route="starred" />
+        <SideBarTab icon={SendHorizonal} tabName="Sent" route="sent" />
+        <SideBarTab icon={FileText} tabName="Draft" route="draft" />
+        <SideBarTab icon={CircleAlert} tabName="Spam" route="spam" />
+        <SideBarTab icon={Trash} tabName="Bin" route="bin" />
       </div>
     </div>
   );
