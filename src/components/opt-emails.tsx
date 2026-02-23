@@ -1,10 +1,10 @@
 "use client";
 
+import EmailActionProvider from "@/contexts/email-action/email-action-context";
+import { handleLabelAction } from "@/lib/actions";
 import { MailItemType, modifyEmailLabelsOptions } from "@/lib/types";
 import { useOptimistic, useTransition } from "react";
 import MailItem from "./mail-item";
-import { handleLabelAction } from "@/lib/actions";
-import Link from "next/link";
 
 export type OptEmailInputType = {
   id: string;
@@ -60,11 +60,11 @@ export default function OptimisticEmails({
 
   return (
     <>
-      {optEmails?.map((email: MailItemType) => (
-        <Link href={`/inbox/${email.id}`} key={email.id}>
-          <MailItem mailItem={email} onAction={emailAction} />
-        </Link>
-      ))}
+      <EmailActionProvider onAction={emailAction}>
+        {optEmails?.map((email: MailItemType) => (
+          <MailItem key={email.id} mailItem={email} />
+        ))}
+      </EmailActionProvider>
     </>
   );
 }

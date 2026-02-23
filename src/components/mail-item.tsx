@@ -1,8 +1,8 @@
 import { MailItemType } from "@/lib/types";
+import Link from "next/link";
 import MailItemButtons from "./mail-item-buttons";
 import StarButton from "./star-button";
 import { Checkbox } from "./ui/checkbox";
-import { OptEmailInputType } from "./opt-emails";
 
 // Helper to format email dates according to requirements
 function formatEmailDate(dateStr: string): string {
@@ -31,25 +31,22 @@ function formatEmailDate(dateStr: string): string {
   });
 }
 
-export default function MailItem({
-  mailItem,
-  onAction,
-}: {
-  mailItem: MailItemType;
-  onAction: ({ id, action }: OptEmailInputType) => Promise<void>;
-}) {
+export default function MailItem({ mailItem }: { mailItem: MailItemType }) {
   const { id, date, from, isStarred, isUnread, threadId, snippet, subject } =
     mailItem;
   return (
-    <section className="group w-full flex hover:cursor-pointer hover:shadow-md py-2 px-3 items-center transition-shadow duration-200 overflow-hidden">
-      <div className="flex items-center w-56 shrink-0 gap-x-4">
+    <section className="group w-full flex hover:shadow-md py-2 px-3 items-center transition-shadow duration-200 overflow-hidden relative">
+      <Link href={`/inbox/${id}`} className="absolute inset-0 z-0">
+        <span className="sr-only">View email</span>
+      </Link>
+      <div className="flex items-center w-56 shrink-0 gap-x-4 relative z-10">
         <Checkbox />
-        <StarButton isStarred={isStarred} id={id} onAction={onAction} />
-        <h3 className="truncate text-sm font-medium">
+        <StarButton isStarred={isStarred} id={id} />
+        <h3 className="truncate text-sm font-medium pointer-events-none">
           {from.split("<")[0].replace(/"/g, "").trim()}
         </h3>
       </div>
-      <div className="flex flex-1 items-center min-w-0 gap-x-2">
+      <div className="flex flex-1 items-center min-w-0 gap-x-2 relative z-10 pointer-events-none">
         <p className="flex-1 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis text-sm">
           <span
             className={
@@ -63,12 +60,12 @@ export default function MailItem({
             {(snippet || "").replace(/<[^>]*>/g, "")}
           </span>
         </p>
-        <div className="shrink-0 flex items-center">
+        <div className="shrink-0 flex items-center pointer-events-auto">
           <p className="group-hover:hidden text-sm text-gray-500 whitespace-nowrap">
             {formatEmailDate(date)}
           </p>
           <div className="hidden group-hover:flex gap-2">
-            <MailItemButtons id={id} isUnread={isUnread} onAction={onAction} />
+            <MailItemButtons id={id} isUnread={isUnread} />
           </div>
         </div>
       </div>

@@ -1,19 +1,17 @@
 "use client";
 
-import { Archive, Trash, Mail, MailOpen } from "lucide-react";
-import { Button } from "./ui/button";
+import { useEmailActionContext } from "@/contexts/email-action/email-action-context";
 import { handleLabelAction } from "@/lib/actions";
-import { OptEmailInputType } from "./opt-emails";
-
+import { Archive, Mail, MailOpen, Trash } from "lucide-react";
+import { Button } from "./ui/button";
 export default function MailItemButtons({
   id,
   isUnread,
-  onAction,
 }: {
   id?: string | null;
   isUnread: boolean;
-  onAction: ({ id, action }: OptEmailInputType) => Promise<void>;
 }) {
+  const { onAction } = useEmailActionContext();
   return (
     <>
       <Button
