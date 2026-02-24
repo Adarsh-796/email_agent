@@ -23,3 +23,17 @@ export type modifyEmailLabelsOptions = {
   isTrashed?: boolean;
   isArchived?: boolean;
 };
+
+export interface SendEmailOptions {
+  to: string;
+  subject: string;
+  body?: string;
+  html?: string;
+  cc?: string | string[];
+  bcc?: string | string[];
+  attachments?: Array<{
+    filename: string;
+    content: string | Buffer;
+    contentType?: string;
+  }>;
+}

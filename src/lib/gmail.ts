@@ -1,7 +1,7 @@
 import { gmail_v1, google } from "googleapis";
 import dotenv from "dotenv";
 import MailComposer from "nodemailer/lib/mail-composer";
-import { modifyEmailLabelsOptions } from "./types";
+import { modifyEmailLabelsOptions, SendEmailOptions } from "./types";
 
 dotenv.config({ quiet: true });
 
@@ -464,15 +464,30 @@ export async function untrashEmail(messageId: string) {
   }
 }
 
-export async function createDraft(to: string, subject: string, body: string) {
+export async function createDraft({
+  to,
+  subject,
+  body,
+  html,
+  cc,
+  bcc,
+  attachments,
+}: SendEmailOptions) {
   try {
-    // 1. Compose the email
-    const mail = new MailComposer({
+    const mailOptions: Record<string, any> = {
       to,
       subject,
-      text: body, // Use 'html' instead of 'text' if you want to send formatted HTML
       from: "me",
-    });
+    };
+
+    if (body) mailOptions.text = body;
+    if (html) mailOptions.html = html;
+    if (cc) mailOptions.cc = cc;
+    if (bcc) mailOptions.bcc = bcc;
+    if (attachments) mailOptions.attachments = attachments;
+
+    // 1. Compose the email
+    const mail = new MailComposer(mailOptions);
 
     // 2. Compile it to a Buffer
     const message = await mail.compile().build();
@@ -629,15 +644,40 @@ export async function sendDraft(draftId: string) {
   }
 }
 
-export async function sendEmail(to: string, subject: string, body: string) {
-  try {
-    const mail = new MailComposer({
-      to,
-      subject,
-      text: body,
-      from: "me",
-    });
 
+export async function sendEmail(options: SendEmailOptions) {
+  const { to, subject, body, html, cc, bcc, attachments } = options;
+  try {
+    if (!to || to.trim().length === 0) {
+      throw new Error("Recipient address (to) is required");
+    }
+
+    const mailOptions: any = {
+      from: "me",
+      to: to.trim(),
+      subject: subject || "(No Subject)",
+    };
+
+    if (body) mailOptions.text = body;
+    if (html) mailOptions.html = html;
+
+    if (cc) {
+      mailOptions.cc = Array.isArray(cc)
+        ? cc.map((c) => c.trim())
+        : cc.trim();
+    }
+
+    if (bcc) {
+      mailOptions.bcc = Array.isArray(bcc)
+        ? bcc.map((b) => b.trim())
+        : bcc.trim();
+    }
+
+    if (attachments && attachments.length > 0) {
+      mailOptions.attachments = attachments;
+    }
+
+    const mail = new MailComposer(mailOptions);
     const message = await mail.compile().build();
 
     const raw = message
@@ -657,7 +697,10 @@ export async function sendEmail(to: string, subject: string, body: string) {
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    console.error("Gmail Send Error:", errorMessage);
+    console.error("Gmail Send Error Details:", {
+      error: errorMessage,
+      recipient: to,
+    });
     throw error;
   }
 }

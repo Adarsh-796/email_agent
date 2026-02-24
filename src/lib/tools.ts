@@ -23,11 +23,14 @@ const tools = {
     inputSchema: z.object({
       to: z.string(),
       subject: z.string(),
-      body: z.string(),
+      body: z.string().optional(),
+      html: z.string().optional(),
+      cc: z.union([z.string(), z.array(z.string())]).optional(),
+      bcc: z.union([z.string(), z.array(z.string())]).optional(),
     }),
     needsApproval: true,
-    execute: async ({ to, subject, body }) => {
-      await sendEmail(to, subject, body);
+    execute: async (options) => {
+      await sendEmail(options);
     },
   }),
 
@@ -36,11 +39,12 @@ const tools = {
     inputSchema: z.object({
       to: z.string(),
       subject: z.string(),
-      body: z.string(),
+      body: z.string().optional(),
+      html: z.string().optional(),
     }),
     needsApproval: true,
-    execute: async ({ to, subject, body }) => {
-      await createDraft(to, subject, body);
+    execute: async (options) => {
+      await createDraft(options);
     },
   }),
 

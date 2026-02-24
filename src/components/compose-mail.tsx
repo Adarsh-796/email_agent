@@ -38,6 +38,28 @@ export default function ComposeMail({
     Content: "",
   });
 
+  async function handleSaveDraftAndClose() {
+    setIsDraftOpen(false);
+    try {
+      // Only attempt to save if there's some content
+      if (mailData.To || mailData.Subject || mailData.Content) {
+        await fetch("/api/draft", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: mailData.To || " ",
+            subject: mailData.Subject || " (No Subject)",
+            body: mailData.Content || " ",
+          }),
+        });
+      }
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+    }
+  }
+
   function handleDetails(detail: "Cc" | "Bcc") {
     if (detail === "Cc") {
       setDetails((prev) => ({ ...prev, Cc: true }));
@@ -53,21 +75,62 @@ export default function ComposeMail({
     setMailData((data) => ({ ...data, [name]: e.target.value }));
   }
 
+  const [isSending, setIsSending] = useState(false);
+
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!mailData.To) {
+      alert("Please specify at least one recipient.");
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "sendDirect",
+          to: mailData.To,
+          subject: mailData.Subject || "(No Subject)",
+          body: mailData.Content || "",
+          cc: mailData.Cc || undefined,
+          bcc: mailData.Bcc || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to send email");
+      }
+
+      alert("Email sent successfully!");
+      setIsDraftOpen(false);
+    } catch (error) {
+      console.error("Send Error:", error);
+      alert(error instanceof Error ? error.message : "Failed to send email");
+    } finally {
+      setIsSending(false);
+    }
+  }
+
   return (
-    <Card>
+    <Card className="bg-amber-50">
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>New Message</CardTitle>
           <CardDescription
-            className="hover:cursor-pointer"
-            onClick={() => setIsDraftOpen(false)}
+            className="hover:cursor-pointer p-1"
+            onClick={handleSaveDraftAndClose}
           >
             x
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSend}>
           <div className="flex items-center gap-1">
             <EmailInput
               name="To"
@@ -122,10 +185,13 @@ export default function ComposeMail({
           <Separator className="mb-2" />
           <Textarea
             value={mailData.Content}
+            className="mb-2"
             name="Content"
             onChange={(e) => handleMailData("Content", e)}
           />
-          <Button onClick={() => {}}>Send</Button>
+          <Button type="submit" disabled={isSending}>
+            {isSending ? "Sending..." : "Send"}
+          </Button>
         </form>
       </CardContent>
     </Card>

@@ -5,22 +5,53 @@ import {
   getDraft,
   listDrafts,
 } from "@/lib/gmail";
-import { DraftWorker } from "@/lib/worker/draft-worker";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const createDraftSchema = z.object({
+  to: z.string(),
+  subject: z.string(),
+  body: z.string().optional(),
+  html: z.string().optional(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const json = await request.json();
+    const result = createDraftSchema.safeParse(json);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid request data", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
+    const draft = await createDraft(result.data);
+
+    return NextResponse.json({
+      success: true,
+      draftId: draft.id,
+    });
+  } catch (err) {
+    console.error("Draft API Error:", err);
+    return NextResponse.json(
+      {
+        error: err instanceof Error ? err.message : "Failed to create a Draft",
+      },
+      { status: 500 },
+    );
+  }
+}
 
 // export async function POST(request: Request) {
 //   try {
-//     const { to, subject, body } = await request.json();
+//     const { input } = await request.json();
 
-//     if (!to || !subject || !body) {
-//       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-//     }
-
-//     const draft = await createDraft(to, subject, body);
-
+//     const a = await DraftWorker(input);
 //     return NextResponse.json({
 //       success: true,
-//       draftId: draft.id,
+//       event: a?.success,
 //     });
 //   } catch (err) {
 //     return NextResponse.json(
@@ -31,25 +62,6 @@ import { NextRequest, NextResponse } from "next/server";
 //     );
 //   }
 // }
-
-export async function POST(request: Request) {
-  try {
-    const { input } = await request.json();
-
-    const a = await DraftWorker(input);
-    return NextResponse.json({
-      success: true,
-      event: a?.success,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      {
-        error: err instanceof Error ? err.message : "Failed to create a Draft",
-      },
-      { status: 500 },
-    );
-  }
-}
 
 export async function DELETE(request: NextRequest) {
   try {
