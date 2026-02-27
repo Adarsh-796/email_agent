@@ -1,6 +1,6 @@
 import { MyTools } from "@/lib/tools";
 import { DraftType, DraftWorker } from "@/lib/worker/draft-worker";
-// import { EventCreationWorker } from "@/lib/worker/event-worker";
+import { EventCreationWorker } from "@/lib/worker/event-worker";
 import { GeneralWorker } from "@/lib/worker/general-worker";
 import routerWorker from "@/lib/worker/router-worker";
 import { devToolsMiddleware } from "@ai-sdk/devtools";

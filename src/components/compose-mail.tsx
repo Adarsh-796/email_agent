@@ -1,15 +1,15 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { Button } from "./ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
 
 type TDetails = {
   Cc: boolean;
@@ -40,8 +40,10 @@ export default function ComposeMail({
 
   async function handleSaveDraftAndClose() {
     setIsDraftOpen(false);
+    if (!mailData.To || !mailData.Subject || !mailData.Content) {
+      return;
+    }
     try {
-      // Only attempt to save if there's some content
       if (mailData.To || mailData.Subject || mailData.Content) {
         await fetch("/api/draft", {
           method: "POST",
@@ -117,16 +119,19 @@ export default function ComposeMail({
   }
 
   return (
-    <Card className="bg-amber-50">
+    <Card className="bg-amber-50 hover:cursor-auto">
       <CardHeader>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <CardTitle>New Message</CardTitle>
-          <CardDescription
-            className="hover:cursor-pointer p-1"
-            onClick={handleSaveDraftAndClose}
-          >
-            x
-          </CardDescription>
+          <CardAction>
+            <Button
+              className="hover:cursor-pointer"
+              variant="link"
+              onClick={handleSaveDraftAndClose}
+            >
+              Close
+            </Button>
+          </CardAction>
         </div>
       </CardHeader>
       <CardContent>
@@ -189,7 +194,11 @@ export default function ComposeMail({
             name="Content"
             onChange={(e) => handleMailData("Content", e)}
           />
-          <Button type="submit" disabled={isSending}>
+          <Button
+            type="submit"
+            disabled={isSending}
+            className="hover:cursor-pointer"
+          >
             {isSending ? "Sending..." : "Send"}
           </Button>
         </form>

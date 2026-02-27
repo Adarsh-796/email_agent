@@ -18,6 +18,8 @@ interface EmailData {
   bodyHtml: string;
 }
 
+import ReplyGenerator from "@/components/ReplyGenerator";
+
 export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
   const { params } = props;
   const { emailId } = await params;
@@ -92,6 +94,11 @@ export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
       <div
         className="max-w-none prose dark:prose-invert"
         dangerouslySetInnerHTML={{ __html: email?.bodyHtml }}
+      />
+
+      <ReplyGenerator
+        emailBody={email?.bodyText || email?.bodyHtml}
+        subject={email?.subject}
       />
 
       <div className="mt-8 flex items-center gap-3">

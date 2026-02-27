@@ -4,7 +4,6 @@ import MailItemButtons from "./mail-item-buttons";
 import StarButton from "./star-button";
 import { Checkbox } from "./ui/checkbox";
 
-// Helper to format email dates according to requirements
 function formatEmailDate(dateStr: string): string {
   const LOCALE = "en-US";
   const date = new Date(dateStr);
