@@ -7,6 +7,8 @@ import { DefaultChatTransport } from "ai";
 import AIMessage from "./aimessage";
 import UserMessage from "./usermessage";
 import { MyUIMessage } from "@/app/api/chat/route";
+import { ReplyUIMessage } from "@/app/api/agent/reply/route";
+import { Card } from "./ui/card";
 
 interface ReplyGeneratorProps {
   emailBody: string;
@@ -17,10 +19,9 @@ export default function ReplyGenerator({
   emailBody,
   subject,
 }: ReplyGeneratorProps) {
-  const [replies, setReplies] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-  const { messages, sendMessage, status } = useChat<MyUIMessage>({
+  const { messages, sendMessage, status } = useChat<ReplyUIMessage>({
     transport: new DefaultChatTransport({
       api: "http://localhost:3000/api/agent/reply",
     }),
@@ -64,32 +65,56 @@ export default function ReplyGenerator({
         </button>
       </div>
 
-      {messages?.map((m) => (
+      {/* {messages?.map((m) => (
         <div className="w-full" data-id={m.id} key={m.id}>
           {m.parts?.map((part, i) => {
             switch (part.type) {
               case "text":
-                return m.role === "assistant" ? (
-                  <AIMessage
-                    role={m.role}
-                    key={`${m.id}-${i}`}
-                    message={part.text}
-                  />
-                ) : (
-                  <UserMessage
-                    role={m.role}
-                    key={`${m.id}-${i}`}
-                    message={part.text}
-                  />
+                return (
+                  m.role === "assistant" && (
+                    <AIMessage
+                      role={m.role}
+                      key={`${m.id}-${i}`}
+                      message={part.text}
+                    />
+                  )
                 );
               default:
                 return null;
             }
           })}
         </div>
-      ))}
+      ))} */}
 
-      {replies.length > 0 && (
+      {messages.map((m) =>
+        m.parts?.map((part, i) => {
+          switch (part.type) {
+            case "data-replies":
+              return part?.data.map((reply, i) => {
+                return (
+                  <Card key={reply}>
+                    <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                      {reply}
+                    </p>
+                    <button
+                      onClick={() => copyToClipboard(reply, i)}
+                      className="absolute top-2 right-2 p-2 rounded-md bg-muted text-muted-foreground group-hover:opacity-100 transition-opacity hover:text-foreground"
+                      title="Copy to clipboard"
+                    >
+                      {copiedIndex === i ? (
+                        <Check size={16} />
+                      ) : (
+                        <Copy size={16} />
+                      )}
+                    </button>
+                  </Card>
+                );
+              });
+          }
+        }),
+      )}
+
+      {/* {replies.length > 0 && (
         <div className="grid gap-4 mt-4">
           {replies.map((reply, index) => (
             <div
@@ -113,7 +138,7 @@ export default function ReplyGenerator({
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

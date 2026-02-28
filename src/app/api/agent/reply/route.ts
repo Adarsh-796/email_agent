@@ -3,8 +3,11 @@ import { google } from "@ai-sdk/google";
 // import { openai } from "@ai-sdk/openai";
 import {
   convertToModelMessages,
-  generateText,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
   Output,
+  streamText,
+  UIMessage,
   wrapLanguageModel,
 } from "ai";
 import z from "zod";
@@ -15,14 +18,22 @@ export const model = wrapLanguageModel({
   middleware: devToolsMiddleware(),
 });
 
-import { NextResponse } from "next/server";
+export type ReplyUIMessage = UIMessage<
+  unknown,
+  {
+    replies: string[];
+  }
+>;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const body = await req.json();
+  const { messages }: { messages: UIMessage[] } = body;
 
-  const { output } = await generateText({
-    model,
-    system: `You are a helpful email assistant that writes natural, polite replies.
+  const stream = createUIMessageStream<ReplyUIMessage>({
+    execute: async ({ writer }) => {
+      const result = streamText({
+        model,
+        system: `You are a helpful email assistant that writes natural, polite replies.
              Generate 2-3 good reply drafts for the current email thread.
              - Reply in the same language as the incoming email.
              - Match a professional yet friendly tone (adjust slightly warmer or more formal if the thread feels that way).
@@ -30,13 +41,27 @@ export async function POST(req: Request) {
              - Include a greeting, main response, next step or question if needed, and a simple closing.
              - Reference key points from the thread naturally.
              - Do not explain anything — just output the drafts.`,
-    messages: await convertToModelMessages(messages),
-    output: Output.object({
-      schema: z.object({
-        replies: z.array(z.string()).max(3),
-      }),
-    }),
+        messages: await convertToModelMessages(messages),
+        output: Output.object({
+          schema: z.object({
+            replies: z.array(z.string()).length(3),
+          }),
+        }),
+      });
+
+      const dataPartId = crypto.randomUUID();
+
+      for await (const chunk of result.partialOutputStream) {
+        writer.write({
+          id: dataPartId,
+          type: "data-replies",
+          data: chunk.replies?.filter((reply) => reply !== undefined) ?? [],
+        });
+      }
+    },
   });
 
-  return NextResponse.json(output.replies);
+  return createUIMessageStreamResponse({
+    stream,
+  });
 }
