@@ -2,6 +2,7 @@ import { MailType } from "@/lib/types";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { MyTools } from "@/lib/tools";
 import { Button } from "./ui/button";
+import { memo } from "react";
 
 type CreateDraftType = MailType & {
   input?: {
@@ -12,7 +13,7 @@ type CreateDraftType = MailType & {
   output?: MyTools["createDraftTool"]["output"];
 };
 
-export default function CreateDraft({
+function CreateDraft({
   state,
   input,
   output,
@@ -54,7 +55,7 @@ export default function CreateDraft({
   }
 }
 
-function CardData({
+const CardData = memo(function CardData({
   title,
   description,
 }: {
@@ -67,4 +68,6 @@ function CardData({
       <CardDescription className="text-initial">{description}</CardDescription>
     </>
   );
-}
+});
+
+export default memo(CreateDraft);

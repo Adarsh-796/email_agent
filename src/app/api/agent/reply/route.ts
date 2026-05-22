@@ -1,4 +1,4 @@
-import { devToolsMiddleware } from "@ai-sdk/devtools";
+// import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
 // import { openai } from "@ai-sdk/openai";
 import {
@@ -12,11 +12,13 @@ import {
 } from "ai";
 import z from "zod";
 
-export const model = wrapLanguageModel({
-  model: google("gemini-3-flash-preview"),
-  //   model: openai("gpt-4.1-nano"),
-  middleware: devToolsMiddleware(),
-});
+// export const model = wrapLanguageModel({
+//   model: google("gemini-3-flash-preview"),
+//   //   model: openai("gpt-4.1-nano"),
+//   middleware: devToolsMiddleware(),
+// });
+
+const model = google("gemini-3-flash-preview");
 
 export type ReplyUIMessage = UIMessage<
   unknown,

@@ -10,13 +10,13 @@ export default function StarButton({
   id?: string | null;
 }) {
   const { onAction } = useEmailActionContext();
+  // console.log(`isStarred : ${isStarred}`);
   return (
     <Star
       size={18}
       fill={isStarred ? "yellow" : "none"}
       color={isStarred ? "yellow" : "black"}
       onClick={() => {
-        console.log("Clicked");
         if (id) {
           onAction({ id, action: isStarred ? "unstar" : "star" });
         }

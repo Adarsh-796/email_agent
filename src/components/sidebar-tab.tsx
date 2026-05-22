@@ -28,7 +28,7 @@ export default function SideBarTab({
         <Icon size={18} />
         <div className="flex justify-between flex-1">
           <span>{tabName}</span>
-          <div>10</div>
+          {/* <div>10</div> */}
         </div>
       </div>
     </div>

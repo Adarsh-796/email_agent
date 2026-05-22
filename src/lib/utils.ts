@@ -57,3 +57,14 @@ export function getRelativeTime(dateString: string) {
     return `${diffInDays} days ago`;
   }
 }
+
+export function arrayLength(len: number) {
+  const arr: Array<number> = [];
+  if (len < 0) {
+    return arr;
+  }
+  for (let i = 0; i < len; i++) {
+    arr.push(i);
+  }
+  return arr;
+}

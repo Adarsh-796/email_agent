@@ -3,7 +3,7 @@ import { fetchEmailById } from "@/lib/gmail"; // Ensure this path matches your f
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { emailId: string } },
+  { params }: { params: Promise<{ emailId: string }> },
 ) {
   const { emailId } = await params;
 

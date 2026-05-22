@@ -2,6 +2,7 @@ import { MyTools } from "@/lib/tools";
 import { MailType } from "@/lib/types";
 import { Button } from "./ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { memo } from "react";
 
 type SendMailType = MailType & {
   input?: {
@@ -12,7 +13,7 @@ type SendMailType = MailType & {
   output?: MyTools["sendEmailTool"]["output"];
 };
 
-export default function SendMail({
+function SendMail({
   state,
   input,
   output,
@@ -55,7 +56,7 @@ export default function SendMail({
   }
 }
 
-function CardData({
+const CardData = memo(function CardData({
   title,
   description,
 }: {
@@ -68,4 +69,6 @@ function CardData({
       <CardDescription className="text-initial">{description}</CardDescription>
     </>
   );
-}
+});
+
+export default memo(SendMail);

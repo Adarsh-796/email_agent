@@ -5,7 +5,6 @@ import ComposeMail from "./compose-mail";
 
 export default function Compose() {
   const [isDraftOpen, setIsDraftOpen] = useState<boolean>(false);
-  console.log(isDraftOpen);
   return (
     <Card
       onClick={() => setIsDraftOpen((prev) => !prev)}

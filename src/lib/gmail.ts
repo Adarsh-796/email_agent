@@ -543,6 +543,19 @@ export async function getEmailCount() {
   }
 }
 
+export async function getUnreadEmailCount() {
+  try {
+    const res = await gmail.users.labels.get({
+      userId: "me",
+      id: "INBOX",
+    });
+
+    return res;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function listDrafts(maxResults = 10) {
   try {
     const listRes = await gmail.users.drafts.list({
@@ -644,7 +657,6 @@ export async function sendDraft(draftId: string) {
   }
 }
 
-
 export async function sendEmail(options: SendEmailOptions) {
   const { to, subject, body, html, cc, bcc, attachments } = options;
   try {
@@ -662,9 +674,7 @@ export async function sendEmail(options: SendEmailOptions) {
     if (html) mailOptions.html = html;
 
     if (cc) {
-      mailOptions.cc = Array.isArray(cc)
-        ? cc.map((c) => c.trim())
-        : cc.trim();
+      mailOptions.cc = Array.isArray(cc) ? cc.map((c) => c.trim()) : cc.trim();
     }
 
     if (bcc) {
@@ -723,14 +733,17 @@ export async function getSpamEmailsCount() {
 
 export async function getDraftEmailsCount() {
   try {
-    const listRes = await gmail.users.messages.list({
+    // const listRes = await gmail.users.messages.list({
+    //   userId: "me",
+    //   q: "in:drafts",
+    //   maxResults: 1,
+    // });
+
+    const listRes = await gmail.users.drafts.list({
       userId: "me",
-      q: "in:drafts",
-      maxResults: 1,
     });
 
-    const count = listRes.data.resultSizeEstimate || 0;
-    return count;
+    return listRes;
   } catch (error) {
     console.error("Error fetching draft emails count:", error);
     throw error;

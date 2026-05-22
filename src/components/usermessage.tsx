@@ -1,7 +1,8 @@
 import { MyUIMessage } from "@/app/api/chat/route";
 import { Card, CardContent } from "./ui/card";
+import { memo } from "react";
 
-export default function UserMessage({
+function UserMessage({
   message,
   role,
 }: {
@@ -19,3 +20,5 @@ export default function UserMessage({
     </div>
   );
 }
+
+export default memo(UserMessage);

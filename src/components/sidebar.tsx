@@ -7,6 +7,7 @@ import {
   SendHorizonal,
   Star,
   Trash,
+  Bot,
 } from "lucide-react";
 import SideBarTab from "./sidebar-tab";
 import Compose from "./compose";
@@ -31,6 +32,7 @@ export default function SideBar() {
         <SideBarTab icon={FileText} tabName="Draft" route="draft" />
         <SideBarTab icon={CircleAlert} tabName="Spam" route="spam" />
         <SideBarTab icon={Trash} tabName="Bin" route="bin" />
+        <SideBarTab icon={Bot} tabName="Agent" route="email" />
       </div>
     </div>
   );

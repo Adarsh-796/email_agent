@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const sendEmailSchema = z.object({
   action: z.literal("sendDirect"),
-  to: z.string().email(),
+  to: z.email(),
   subject: z.string(),
   body: z.string().optional(),
   html: z.string().optional(),
@@ -14,8 +14,8 @@ const sendEmailSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const json = await request.json();
-    const result = sendEmailSchema.safeParse(json);
+    const sendEmailData = await request.json();
+    const result = sendEmailSchema.safeParse(sendEmailData);
 
     if (!result.success) {
       return NextResponse.json(

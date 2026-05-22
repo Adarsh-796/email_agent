@@ -1,6 +1,8 @@
 import OptimisticEmails from "@/components/opt-emails";
 import { MailItemType } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function BinPage() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/bin`);
   const data = await response.json();

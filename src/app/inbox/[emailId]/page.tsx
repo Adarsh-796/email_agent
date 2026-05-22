@@ -41,14 +41,12 @@ export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
           <h1 className="text-2xl font-semibold text-foreground/90 leading-tight">
             {email?.subject}
           </h1>
-          <button
-            className={`mt-1 shrink-0 transition-colors ${
-              email?.isStarred
-                ? "text-yellow-400 fill-yellow-400"
-                : "text-muted-foreground hover:text-yellow-400"
-            }`}
-          >
-            <Star size={24} />
+          <button className={`mt-1 shrink-0 transition-colors}`}>
+            <Star
+              size={24}
+              fill={email?.isStarred ? "yellow" : "none"}
+              color={email?.isStarred ? "yellow" : "black"}
+            />
           </button>
         </div>
 

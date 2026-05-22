@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { modifyEmailLabelsOptions } from "./types";
 
 async function handleLabelAction(
@@ -16,8 +16,10 @@ async function handleLabelAction(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ messageId, options }),
+      // cache: "no-store",
     });
-    revalidatePath("/");
+    // revalidatePath("/");
+    // revalidateTag("fetchEmails", "max");
   } catch (error) {
     console.error("Error handling label action:", error);
   }
