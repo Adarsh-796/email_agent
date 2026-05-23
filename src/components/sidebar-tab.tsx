@@ -17,7 +17,10 @@ export default function SideBarTab({
   route: string;
 }) {
   const pathname = usePathname();
-  const isActive = pathname === `/${route}` || pathname.includes(`/${route}`);
+  const isActive =
+    tabName === "Inbox" && pathname === "/"
+      ? true
+      : pathname === `/${route}` || pathname.includes(`/${route}`);
 
   return (
     <div

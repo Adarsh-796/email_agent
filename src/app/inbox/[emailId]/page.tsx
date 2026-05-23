@@ -1,4 +1,3 @@
-import { handleLabelAction } from "@/lib/actions";
 import { formatEmailDate, getRelativeTime, parseSender } from "@/lib/utils";
 import { CornerUpLeft, Star } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -19,8 +18,24 @@ interface EmailData {
 }
 
 import ReplyGenerator from "@/components/ReplyGenerator";
+import { Suspense } from "react";
+import MailItemLoader from "@/components/mail-item-loader";
 
 export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
+  return (
+    <div className="flex flex-col gap-6 p-6">
+      <Suspense fallback={<MailItemLoader />}>
+        <EmailPageData props={props} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EmailPageData({
+  props,
+}: {
+  props: PageProps<"/inbox/[emailId]">;
+}) {
   const { params } = props;
   const { emailId } = await params;
 
@@ -35,7 +50,7 @@ export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
   const { name, emailstring } = parseSender(email?.from);
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <>
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-2xl font-semibold text-foreground/90 leading-tight">
@@ -105,6 +120,6 @@ export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
           Reply
         </button> */}
       </div>
-    </div>
+    </>
   );
 }

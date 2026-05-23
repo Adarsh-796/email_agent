@@ -69,7 +69,7 @@ function OptimisticEmails({ emails }: { emails: MailItemType[] }) {
   };
 
   return (
-    <div className="h-137.5 overflow-y-auto">
+    <div className="h-130 overflow-y-auto">
       <EmailActionProvider onAction={emailAction}>
         {optEmails?.map((email: MailItemType) => (
           <MailItem key={email.id} mailItem={email} />

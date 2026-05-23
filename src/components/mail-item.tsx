@@ -34,8 +34,6 @@ function formatEmailDate(dateStr: string): string {
 function MailItem({ mailItem }: { mailItem: MailItemType }) {
   const { id, date, from, isStarred, isUnread, threadId, snippet, subject } =
     mailItem;
-  console.log(`MailItem - ${id} rendered`);
-  console.log(`isStarred: ${isStarred}`);
   return (
     <section className="group w-full flex h-12 hover:shadow-md py-2 px-3 items-center transition-shadow duration-200 overflow-hidden relative">
       <Link href={`/inbox/${id}`} className="absolute inset-0 z-0">
