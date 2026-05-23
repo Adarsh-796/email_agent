@@ -1,10 +1,13 @@
-import { ChatAddToolApproveResponseFunction, ToolUIPart } from "ai";
+import { ChatAddToolApproveResponseFunction, ToolUIPart, UIMessage } from "ai";
+import { MyTools } from "./tools";
 
 export type MailType = {
   state: ToolUIPart["state"];
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
   approvalId?: string;
 };
+
+export type MyUIMessage = UIMessage<never, never, MyTools>;
 
 export type MailItemType = {
   id: string | null | undefined;

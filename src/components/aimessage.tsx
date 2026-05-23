@@ -1,4 +1,4 @@
-import { MyUIMessage } from "@/app/api/chat/route";
+import { MyUIMessage } from "@/lib/types";
 import { Card, CardContent } from "./ui/card";
 import { Streamdown } from "streamdown";
 import { memo } from "react";

@@ -11,7 +11,7 @@ import {
   lastAssistantMessageIsCompleteWithApprovalResponses,
 } from "ai";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { MyUIMessage } from "@/app/api/chat/route";
+import { MyUIMessage } from "@/lib/types";
 import SendMail from "@/components/sendmail";
 import CreateDraft from "@/components/createdraft";
 
