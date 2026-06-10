@@ -14,6 +14,7 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { MyUIMessage } from "@/lib/types";
 import SendMail from "@/components/sendmail";
 import CreateDraft from "@/components/createdraft";
+import CreateCalendarEvent from "@/components/create-calendar-event";
 
 export default function Home() {
   const { sendMessage, messages, addToolApprovalResponse } =
@@ -125,6 +126,16 @@ const ChatData = React.memo(function ChatData({
                     input={part.input}
                     approvalId={part.approval?.id}
                     output={part.output}
+                    addToolApprovalResponse={addToolApprovalResponse}
+                  />
+                );
+              case "tool-createCalendarEventTool":
+                return (
+                  <CreateCalendarEvent
+                    key={`${m.id}-${i}`}
+                    state={part.state}
+                    input={part.input}
+                    approvalId={part.approval?.id}
                     addToolApprovalResponse={addToolApprovalResponse}
                   />
                 );

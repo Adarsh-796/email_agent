@@ -4,7 +4,7 @@ import {
   createDraftTool,
   sendEmailTool,
 } from "@/lib/tools";
-// import { devToolsMiddleware } from "@ai-sdk/devtools";
+import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
 import {
   convertToModelMessages,
@@ -13,12 +13,12 @@ import {
   wrapLanguageModel,
 } from "ai";
 
-// export const model = wrapLanguageModel({
-//   model: google("gemini-3-flash-preview"),
-//   // model: openai("gpt-4.1-nano"),
-//   middleware: devToolsMiddleware(),
-// });
-const model = google("gemini-3-flash-preview");
+export const model = wrapLanguageModel({
+  model: google("gemini-3-flash-preview"),
+  // model: openai("gpt-4.1-nano"),
+  middleware: devToolsMiddleware(),
+});
+// const model = google("gemini-3-flash-preview");
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();

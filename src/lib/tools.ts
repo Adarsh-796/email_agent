@@ -142,7 +142,6 @@ const tools = {
         ),
       attendeeEmails: z
         .array(z.email())
-        .optional()
         .describe("An array of email addresses for people to invite."),
     }),
     needsApproval: true,

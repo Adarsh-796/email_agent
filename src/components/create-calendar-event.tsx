@@ -4,29 +4,32 @@ import { MyTools } from "@/lib/tools";
 import { Button } from "./ui/button";
 import { memo } from "react";
 
-type CreateDraftType = MailType & {
+type CreateCalendarEventType = MailType & {
   input?: {
-    to?: string;
-    subject?: string;
-    body?: string;
+    summary?: string;
+    description?: string;
+    startTime?: string;
+    endTime?: string;
+    attendeeEmails?: string[];
   };
-  output?: MyTools["createDraftTool"]["output"];
+  output?: MyTools["createCalendarEventTool"]["output"];
 };
 
-function CreateDraft({
+function CreateCalendarEvent({
   state,
   input,
   output,
   addToolApprovalResponse,
   approvalId,
-}: CreateDraftType) {
+}: CreateCalendarEventType) {
   if (state === "approval-requested")
     return (
       <Card>
         <CardHeader>
-          <CardData title="To" description={input?.to} />
-          <CardData title="Subject" description={input?.subject} />
-          <CardData title="Body" description={input?.body} />
+          <CardData title="To" description={input?.summary} />
+          <CardData title="Subject" description={input?.description} />
+          <CardData title="Body" description={input?.startTime} />
+          <CardData title="Body" description={input?.endTime} />
         </CardHeader>
         <div className="flex space-x-7 px-5">
           <Button
@@ -70,4 +73,4 @@ const CardData = memo(function CardData({
   );
 });
 
-export default memo(CreateDraft);
+export default memo(CreateCalendarEvent);
