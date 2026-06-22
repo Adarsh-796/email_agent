@@ -5,6 +5,8 @@ import React, { use, useState, type ReactNode } from "react";
 type PaginationContextType = {
   pageTokens: Array<string>;
   setPageTokens: React.Dispatch<React.SetStateAction<string[]>>;
+  currentPageToken: string | undefined;
+  setCurrentPageToken: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export const PaginationContext =
@@ -16,8 +18,18 @@ export default function PaginationContextProvider({
   children: ReactNode;
 }) {
   const [pageTokens, setPageTokens] = useState<Array<string>>([]);
+  const [currentPageToken, setCurrentPageToken] = useState<
+    string | undefined
+  >();
   return (
-    <PaginationContext.Provider value={{ pageTokens, setPageTokens }}>
+    <PaginationContext.Provider
+      value={{
+        pageTokens,
+        setPageTokens,
+        currentPageToken,
+        setCurrentPageToken,
+      }}
+    >
       {children}
     </PaginationContext.Provider>
   );

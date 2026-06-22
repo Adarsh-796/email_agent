@@ -21,7 +21,7 @@ export default async function EmailsFetcher({
       ) : (
         <p>No emails found.</p>
       )}
-      <PaginationButtons pageToken={nextPageToken} />
+      <PaginationButtons nextPageToken={nextPageToken} />
     </>
   );
 }

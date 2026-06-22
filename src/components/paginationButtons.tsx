@@ -10,32 +10,74 @@ import {
 import PaginationContextProvider, {
   usePagination,
 } from "@/contexts/pagination-context";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-export function PaginationDemo({ pageToken }: { pageToken: string }) {
-  const { pageTokens, setPageTokens } = usePagination();
+export function PaginationDemo({ nextPageToken }: { nextPageToken: string }) {
+  const { pageTokens, setPageTokens, currentPageToken, setCurrentPageToken } =
+    usePagination();
+  const params = useSearchParams();
+  const pageTokenParam = params.get("pageToken");
+
+  if (pageTokenParam === null) {
+    setCurrentPageToken(undefined);
+  }
+  // Sync URL -> context. Must be in an effect, not in render body.
+  useEffect(() => {
+    if (pageTokenParam === null) return;
+    setCurrentPageToken(pageTokenParam);
+  }, [pageTokenParam, setCurrentPageToken]);
 
   useEffect(() => {
-    if (!pageToken) return;
+    if (!nextPageToken) return;
 
     setPageTokens((prevPageTokens) => {
-      if (prevPageTokens.at(-1) === pageToken) return prevPageTokens;
-      return [...prevPageTokens, pageToken];
+      if (prevPageTokens.includes(nextPageToken)) return prevPageTokens;
+      return [...prevPageTokens, nextPageToken];
     });
-  }, [pageToken, setPageTokens]);
+  }, [nextPageToken, setPageTokens]);
 
+  const currentIndex = currentPageToken
+    ? pageTokens.indexOf(currentPageToken)
+    : -1;
+
+  // currentIndex === -1 means we're on the first page (no token yet)
   const previousToken =
-    pageTokens.length >= 2 ? pageTokens[pageTokens.length - 2] : undefined;
+    currentIndex > 0 ? pageTokens[currentIndex - 1] : undefined;
 
-  const nextToken = pageTokens.at(-1);
+  // The token to go forward to is the one *after* the current index,
+  // not just "whatever is last in the array."
+  const nextToken =
+    currentIndex >= 0 && currentIndex < pageTokens.length - 1
+      ? pageTokens[currentIndex + 1]
+      : nextPageToken;
+
+  const isFirstPage = pageTokenParam === null;
+  const isLastPage = !nextToken;
+  console.log(currentPageToken);
+  console.log(`First: ${isFirstPage}, Last: ${isLastPage}`);
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={`?pageToken=${previousToken}`} />
+          <PaginationPrevious
+            href={previousToken ? `?pageToken=${previousToken}` : "?"}
+            className={
+              isFirstPage
+                ? "pointer-events-none opacity-50 cursor-not-allowed"
+                : ""
+            }
+          />
         </PaginationItem>
         <PaginationItem>
-          <PaginationNext href={`?pageToken=${nextToken}`} />
+          <PaginationNext
+            href={nextToken ? `?pageToken=${nextToken}` : "#"}
+            className={
+              isLastPage
+                ? "pointer-events-none opacity-50 cursor-not-allowed"
+                : ""
+            }
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
@@ -43,13 +85,13 @@ export function PaginationDemo({ pageToken }: { pageToken: string }) {
 }
 
 export default function PaginationButtons({
-  pageToken,
+  nextPageToken,
 }: {
-  pageToken: string;
+  nextPageToken: string;
 }) {
   return (
     <PaginationContextProvider>
-      <PaginationDemo pageToken={pageToken} />
+      <PaginationDemo nextPageToken={nextPageToken} />
     </PaginationContextProvider>
   );
 }
