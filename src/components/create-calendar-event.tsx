@@ -10,7 +10,7 @@ type CreateCalendarEventType = MailType & {
     description?: string;
     startTime?: string;
     endTime?: string;
-    attendeeEmails?: string[];
+    attendeeEmails?: (string | undefined)[];
   };
   output?: MyTools["createCalendarEventTool"]["output"];
 };
@@ -45,6 +45,7 @@ function CreateCalendarEvent({
               if (!approvalId) return;
               addToolApprovalResponse({ id: approvalId, approved: false });
             }}
+            variant="destructive"
           >
             Deny
           </Button>

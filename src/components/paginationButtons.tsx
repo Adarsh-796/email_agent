@@ -19,13 +19,9 @@ export function PaginationDemo({ nextPageToken }: { nextPageToken: string }) {
   const params = useSearchParams();
   const pageTokenParam = params.get("pageToken");
 
-  if (pageTokenParam === null) {
-    setCurrentPageToken(undefined);
-  }
-  // Sync URL -> context. Must be in an effect, not in render body.
+  // Sync URL -> context (covers both "has a token" and "back to page 1").
   useEffect(() => {
-    if (pageTokenParam === null) return;
-    setCurrentPageToken(pageTokenParam);
+    setCurrentPageToken(pageTokenParam ?? undefined);
   }, [pageTokenParam, setCurrentPageToken]);
 
   useEffect(() => {
@@ -54,8 +50,7 @@ export function PaginationDemo({ nextPageToken }: { nextPageToken: string }) {
 
   const isFirstPage = pageTokenParam === null;
   const isLastPage = !nextToken;
-  console.log(currentPageToken);
-  console.log(`First: ${isFirstPage}, Last: ${isLastPage}`);
+
   return (
     <Pagination>
       <PaginationContent>

@@ -41,7 +41,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex items-center justify-center relative  font-sans dark:bg-black">
+    <div className="flex items-center justify-center relative  font-sans dark:bg-black h-130">
       <ChatData
         messages={messages}
         addToolApprovalResponse={addToolApprovalResponse}
@@ -88,7 +88,7 @@ const ChatData = React.memo(function ChatData({
   addToolApprovalResponse,
 }: ChatDataProps) {
   return (
-    <main className="flex min-h-screen w-full max-w-3xl flex-col gap-4 py-4 px-4 bg-white dark:bg-black sm:items-start">
+    <main className="flex h-full w-full max-w-3xl flex-col gap-4 py-4 px-4 bg-white dark:bg-black sm:items-start overflow-y-auto">
       {messages?.map((m) => (
         <div className="w-full" data-id={m.id} key={m.id}>
           {m.parts?.map((part, i) => {

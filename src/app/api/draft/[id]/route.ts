@@ -6,7 +6,6 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    console.log(params);
     const { id: draftId } = await params;
 
     const body = await request.json();

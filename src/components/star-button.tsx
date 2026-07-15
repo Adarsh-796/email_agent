@@ -10,7 +10,6 @@ export default function StarButton({
   id?: string | null;
 }) {
   const { onAction } = useEmailActionContext();
-  // console.log(`isStarred : ${isStarred}`);
   return (
     <Star
       size={18}

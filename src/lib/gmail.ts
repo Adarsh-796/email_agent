@@ -441,7 +441,6 @@ export async function trashEmail(messageId: string) {
       id: messageId,
     });
 
-    console.log(`Email ${messageId} moved to trash.`);
     return res.data;
   } catch (error) {
     console.error("Error trashing email:", error);
@@ -456,7 +455,6 @@ export async function untrashEmail(messageId: string) {
       id: messageId,
     });
 
-    console.log(`Email ${messageId} restored from trash.`);
     return res.data;
   } catch (error) {
     console.error("Gmail Untrash Error:", error);
@@ -523,7 +521,6 @@ export async function deleteDraft(draftId: string) {
       id: draftId,
     });
 
-    console.log(`Draft ${draftId} deleted successfully.`);
     return { success: true };
   } catch (error) {
     console.error("Error deleting draft:", error);
@@ -645,9 +642,6 @@ export async function sendDraft(draftId: string) {
       },
     });
 
-    console.log(
-      `Draft ${draftId} sent successfully! Message ID: ${res.data.id}`,
-    );
     return res.data;
   } catch (error: unknown) {
     const errorMessage =
@@ -803,7 +797,6 @@ export async function modifyEmailLabels(
       },
     });
 
-    console.log(`Successfully updated ${messageId}`);
     return res.data;
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown API Error";
