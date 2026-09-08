@@ -89,7 +89,7 @@ export default function ReplyGenerator({
             case "data-replies":
               return part?.data.map((reply, i) => {
                 return (
-                  <Card key={reply}>
+                  <Card key={reply} className="px-10">
                     <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                       {reply}
                     </p>
