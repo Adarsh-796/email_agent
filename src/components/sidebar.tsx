@@ -28,7 +28,7 @@ export default function SideBar() {
       <div className="w-62.5 py-3 pe-3 mt-4">
         <SideBarTab icon={Inbox} tabName="Inbox" route="inbox" />
         <SideBarTab icon={Star} tabName="Starred" route="starred" />
-        <SideBarTab icon={SendHorizonal} tabName="Sent" route="sent" />
+        {/* <SideBarTab icon={SendHorizonal} tabName="Sent" route="sent" /> */}
         <SideBarTab icon={FileText} tabName="Draft" route="draft" />
         <SideBarTab icon={CircleAlert} tabName="Spam" route="spam" />
         <SideBarTab icon={Trash} tabName="Bin" route="bin" />
