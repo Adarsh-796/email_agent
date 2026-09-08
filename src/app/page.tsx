@@ -3,6 +3,8 @@ import LabelList from "@/components/label-list";
 import MailListLoader from "@/components/mail-list-loader";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {

@@ -10,8 +10,12 @@ export default async function EmailsFetcher({
   if (pageToken) url.searchParams.set("pageToken", pageToken);
 
   const response = await fetch(url, {
+    cache: "no-store",
     next: { tags: ["fetchEmails"] },
   });
+  if (!response.ok) {
+    return <p>No emails found.</p>;
+  }
   const { emails, nextPageToken } = await response.json();
 
   return (

@@ -21,6 +21,8 @@ import ReplyGenerator from "@/components/ReplyGenerator";
 import { Suspense } from "react";
 import MailItemLoader from "@/components/mail-item-loader";
 
+export const dynamic = "force-dynamic";
+
 export default async function EmailPage(props: PageProps<"/inbox/[emailId]">) {
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -39,7 +41,10 @@ async function EmailPageData({
   const { params } = props;
   const { emailId } = await params;
 
-  const resp = await fetch(`http://localhost:3000/api/get/${emailId}`);
+  const resp = await fetch(
+    `${process.env.NEXT_PUBLIC_BASEURL ?? "http://localhost:3000"}/api/get/${emailId}`,
+    { cache: "no-store" },
+  );
 
   if (!resp.ok) {
     if (resp.status === 404) notFound();
