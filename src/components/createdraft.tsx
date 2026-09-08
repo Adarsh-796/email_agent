@@ -42,6 +42,7 @@ function CreateDraft({
               if (!approvalId) return;
               addToolApprovalResponse({ id: approvalId, approved: false });
             }}
+            variant="destructive"
           >
             Deny
           </Button>
