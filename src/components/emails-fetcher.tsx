@@ -6,7 +6,7 @@ export default async function EmailsFetcher({
 }: {
   pageToken?: string;
 }) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASEURL}/api/get`);
+  const url = new URL(`${process.env.BASEURL}/api/get`);
   if (pageToken) url.searchParams.set("pageToken", pageToken);
 
   const response = await fetch(url, {

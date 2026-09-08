@@ -16,7 +16,7 @@ export default async function StarredPage() {
 
 async function StarredEmails() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASEURL ?? "http://localhost:3000"}/api/star`,
+    `${process.env.BASEURL ?? "http://localhost:3000"}/api/star`,
     {
       cache: "no-store",
     },

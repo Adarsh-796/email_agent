@@ -42,7 +42,7 @@ async function EmailPageData({
   const { emailId } = await params;
 
   const resp = await fetch(
-    `${process.env.NEXT_PUBLIC_BASEURL ?? "http://localhost:3000"}/api/get/${emailId}`,
+    `${process.env.BASEURL ?? "http://localhost:3000"}/api/get/${emailId}`,
     { cache: "no-store" },
   );
 

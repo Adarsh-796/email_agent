@@ -8,7 +8,7 @@ async function handleLabelAction(
   options: modifyEmailLabelsOptions,
 ) {
   const { BASEURL } = process.env;
-  const url = `${process.env.NEXT_PUBLIC_BASEURL}/api/labels`;
+  const url = `${BASEURL}/api/labels`;
   try {
     await fetch(url, {
       method: "POST",

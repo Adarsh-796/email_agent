@@ -17,7 +17,7 @@ export default async function DraftPage() {
 
 async function DraftMails() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASEURL}/api/draft`,
+    `${process.env.BASEURL}/api/draft`,
     { cache: "no-store" },
   );
   if (!response.ok) {

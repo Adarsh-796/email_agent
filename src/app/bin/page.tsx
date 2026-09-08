@@ -15,7 +15,7 @@ export default async function BinPage() {
 }
 
 async function BinMails() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/bin`, {
+  const response = await fetch(`${process.env.BASEURL}/api/bin`, {
     cache: "no-store",
   });
   if (!response.ok) {

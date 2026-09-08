@@ -15,7 +15,7 @@ export default async function SpamPage() {
 }
 
 async function SpamEmails() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/api/spam`, {
+  const response = await fetch(`${process.env.BASEURL}/api/spam`, {
     cache: "no-store",
   });
   if (!response.ok) {
