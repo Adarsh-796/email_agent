@@ -20,10 +20,10 @@ export default function ReplyGenerator({
 
   const { messages, sendMessage, status } = useChat<ReplyUIMessage>({
     transport: new DefaultChatTransport({
-      api: "http://localhost:3000/api/agent/reply",
+      // api: "http://localhost:3000/api/agent/reply", development
+      api: `${process.env.BASEURL}/api/agent/reply`, //production
     }),
   });
-
   function generateReplies() {
     sendMessage({
       text: `Subject: ${subject}\n\n${emailBody}`,
