@@ -39,7 +39,16 @@ const tools = {
     inputSchema: z.object({
       to: z.string(),
       subject: z.string(),
-      body: z.string().optional(),
+      body: z
+        .string()
+        .min(20)
+        .describe(
+          "Write a complete, professional email body based on the recipient, subject, and user's request. " +
+            "Do not merely repeat the subject. Include an appropriate greeting, relevant context, " +
+            "the main purpose/details of the email, any requested action or next steps, and a polite closing. " +
+            "Unless the user explicitly asks for a very short email, write 2-4 well-formed paragraphs.",
+        )
+        .optional(),
       html: z.string().optional(),
     }),
     needsApproval: true,
